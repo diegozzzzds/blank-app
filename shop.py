@@ -7,7 +7,7 @@ import time
 import aiohttp
 import uuid
 
-API_TOKEN = '8042215508:AAFPbLKUZuZBiyCkT_cciMw5VAE5xB2OBo0'  # 替换为您的机器人API令牌
+API_TOKEN = ''  # 替换为您的机器人API令牌
 ADMIN_PASSWORD = '12321'  # 设置管理员密码
 
 logging.basicConfig(level=logging.INFO)
