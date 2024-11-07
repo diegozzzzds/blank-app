@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理页面</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container">
+    <h1 class="mt-5">管理页面</h1>
+    <p>欢迎，{{ session['username'] }}!</p>
+    <a href="/" class="btn btn-secondary">返回首页</a>
+    <form action="/logout" method="POST" style="display:inline;">
+        <button type="submit" class="btn btn-danger">注销</button>
+    </form>
+</div>
+
+</body>
+</html>

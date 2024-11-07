@@ -1,0 +1,79 @@
+body {
+    background-color: #f8f9fa; /* 背景颜色 */
+    font-family: 'Arial', sans-serif; /* 字体样式 */
+}
+
+h1 {
+    color: #343a40; /* 主标题颜色 */
+    text-align: center; /* 主标题居中 */
+}
+
+.container {
+    margin-top: 50px; /* 上边距 */
+    padding: 30px; /* 内边距 */
+    border-radius: 8px; /* 圆角 */
+    background-color: white; /* 容器的背景色 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+}
+
+.navbar {
+    margin-bottom: 40px; /* 导航栏下边距 */
+}
+
+form {
+    margin-top: 20px; /* 表单上边距 */
+}
+
+.form-group label {
+    font-weight: bold; /* 标签加粗 */
+}
+
+button.btn {
+    background-color: #007bff; /* 按钮背景色 */
+    border: none; /* 去掉边框 */
+    color: white; /* 按钮文本颜色 */
+    padding: 10px 20px; /* 内边距 */
+    border-radius: 5px; /* 圆角 */
+    transition: background-color 0.3s; /* 平滑过渡 */
+}
+
+button.btn:hover {
+    background-color: #0056b3; /* 悬停时颜色 */
+}
+
+.result {
+    margin-top: 20px; /* 结果块上边距 */
+    padding: 20px; /* 内边距 */
+    border: 1px solid #dee2e6; /* 边框 */
+    border-radius: 5px; /* 圆角 */
+    background-color: #e9ecef; /* 结果块的背景色 */
+}
+
+#status, #responses {
+    font-weight: bold; /* 加粗文本 */
+}
+
+table {
+    margin-top: 20px; /* 表格上边距 */
+    width: 100%; /* 表格宽度 */
+    border-collapse: collapse; /* 边框合并 */
+}
+
+table th, table td {
+    border: 1px solid #dee2e6; /* 单元格边框 */
+    padding: 10px; /* 单元格内边距 */
+    text-align: left; /* 左对齐文本 */
+}
+
+table th {
+    background-color: #007bff; /* 表头背景色 */
+    color: white; /* 表头文本颜色 */
+}
+
+table td {
+    background-color: #f7f7f7; /* 单元格背景色 */
+}
+
+table tr:nth-child(even) td {
+    background-color: #e9ecef; /* 偶数行的背景色 */
+}
