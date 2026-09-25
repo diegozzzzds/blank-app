@@ -1,0 +1,79 @@
+[
+  {
+    "id": 36847354,
+    "name": "晴天",
+    "trackName": "晴天",
+    "artistName": "周杰伦",
+    "albumName": "無與倫比演唱會 CD1",
+    "duration": 299.0,
+    "instrumental": false,
+    "plainLyrics": "故事的小黃花\n從出生那年就飄著\n童年的盪鞦韆\n隨記憶一直晃到現在",
+    "syncedLyrics": "[00:29.36] 故事的小黃花\n[00:32.77] 從出生那年就飄著\n[00:36.15] 童年的盪鞦韆\n[00:39.66] 隨記憶一直晃到現在"
+  },
+  {
+    "id": 37346351,
+    "name": "晴天",
+    "trackName": "晴天",
+    "artistName": "周杰伦",
+    "albumName": "东风破",
+    "duration": 270.0,
+    "instrumental": false,
+    "plainLyrics": "故事的小黃花\n從出生那年就飄著\n童年的盪鞦韆\n隨記憶一直晃到現在",
+    "syncedLyrics": "[00:29.36]故事的小黃花\n[00:32.77]從出生那年就飄著\n[00:36.15]童年的盪鞦韆\n[00:39.66]隨記憶一直晃到現在"
+  },
+  {
+    "id": 34477230,
+    "name": "晴天",
+    "trackName": "晴天",
+    "artistName": "周杰伦",
+    "albumName": "周杰伦地表最强世界巡回演唱会 (Live)",
+    "duration": 249.0,
+    "instrumental": false,
+    "plainLyrics": "故事的小黃花\n從出生那年就飄著\n童年的盪鞦韆\n隨記憶一直晃到現在",
+    "syncedLyrics": "[00:29.36] 故事的小黃花\n[00:32.77] 從出生那年就飄著\n[00:36.15] 童年的盪鞦韆\n[00:39.66] 隨記憶一直晃到現在"
+  },
+  {
+    "id": 34494755,
+    "name": "晴天",
+    "trackName": "晴天",
+    "artistName": "周杰伦",
+    "albumName": "P. L. A - Angel Devil’s Youth - High Quality Music",
+    "duration": 270.0,
+    "instrumental": false,
+    "plainLyrics": "故事的小黃花\n從出生那年就飄著\n童年的盪鞦韆\n隨記憶一直晃到現在",
+    "syncedLyrics": "[00:29.36] 故事的小黃花\n[00:32.77] 從出生那年就飄著\n[00:36.15] 童年的盪鞦韆\n[00:39.66] 隨記憶一直晃到現在"
+  },
+  {
+    "id": 34777961,
+    "name": "晴天",
+    "trackName": "晴天",
+    "artistName": "周杰伦",
+    "albumName": "国语经典老歌精选 (400首)",
+    "duration": 270.0,
+    "instrumental": false,
+    "plainLyrics": "故事的小黃花\n從出生那年就飄著\n童年的盪鞦韆\n隨記憶一直晃到現在",
+    "syncedLyrics": "[00:29.36] 故事的小黃花\n[00:32.77] 從出生那年就飄著\n[00:36.15] 童年的盪鞦韆\n[00:39.66] 隨記憶一直晃到現在"
+  },
+  {
+    "id": 34622583,
+    "name": "晴天",
+    "trackName": "晴天",
+    "artistName": "周杰伦",
+    "albumName": "叶惠美",
+    "duration": 262.0,
+    "instrumental": false,
+    "plainLyrics": "故事的小黃花\n從出生那年就飄著\n童年的盪鞦韆\n隨記憶一直晃到現在",
+    "syncedLyrics": "[00:29.36] 故事的小黃花\n[00:32.77] 從出生那年就飄著\n[00:36.15] 童年的盪鞦韆\n[00:39.66] 隨記憶一直晃到現在"
+  },
+  {
+    "id": 1,
+    "name": "Other Song",
+    "trackName": "Other Song",
+    "artistName": "周杰伦",
+    "albumName": null,
+    "duration": 270.0,
+    "instrumental": false,
+    "plainLyrics": "la la",
+    "syncedLyrics": "[00:01.00]la la"
+  }
+]

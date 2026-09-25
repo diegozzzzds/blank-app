@@ -1,0 +1,61 @@
+{
+  "responseHeader": {
+    "status": 0,
+    "QTime": 57,
+    "params": {
+      "query": "(text:jazz OR text:jazz OR text__reviews:jazz) AND mediatype:audio AND collection:(netlabels OR audio_music OR 78rpm OR opensource_audio)",
+      "qin": "(jazz) AND mediatype:audio AND collection:(netlabels OR audio_music OR 78rpm OR opensource_audio)",
+      "fields": "identifier,title,creator,licenseurl,year",
+      "wt": "json",
+      "rows": 5,
+      "start": 0
+    }
+  },
+  "response": {
+    "numFound": 88942,
+    "start": 0,
+    "docs": [
+      {
+        "creator": "Rich Pulin",
+        "identifier": "JonathanShowPulin4Jazz.151219.8",
+        "title": "Jonathan Saraga Show Pulin 4 Jazz. 151219.8",
+        "year": 2015
+      },
+      {
+        "identifier": "monkeyssea",
+        "title": "Sea Monkeys"
+      },
+      {
+        "creator": "Marco Luz",
+        "identifier": "JoaoHasselberg_SMUP",
+        "title": "João Hasselberg & Friends Mix& Master",
+        "year": 2016
+      },
+      {
+        "creator": "Cyd",
+        "identifier": "JazzambiRadioShow4860317",
+        "title": "Jazzambi Radio Show 48 June 3, 2017",
+        "year": 2017
+      },
+      {
+        "creator": "Kyle Jordan henry",
+        "identifier": "FeelinStrange",
+        "licenseurl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "title": "feelin strange"
+      },
+      {
+        "identifier": "multi_creator_item",
+        "title": [
+          "Array Title",
+          "Second"
+        ],
+        "creator": [
+          "Alice",
+          "Bob"
+        ],
+        "licenseurl": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "year": "1999"
+      }
+    ]
+  }
+}

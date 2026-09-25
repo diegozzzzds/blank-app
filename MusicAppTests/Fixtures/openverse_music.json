@@ -1,0 +1,121 @@
+{
+  "result_count": 240,
+  "page_count": 12,
+  "page_size": 20,
+  "page": 1,
+  "results": [
+    {
+      "id": "5d08a8ad-73b2-45e8-a26d-e1363add3c85",
+      "title": "Old Movie Ragtime Piano",
+      "foreign_landing_url": "https://www.jamendo.com/track/923463",
+      "url": "https://prod-1.storage.jamendo.com/?trackid=923463&format=mp32",
+      "creator": "Akashic Records",
+      "license": "by-nc-nd",
+      "license_version": "3.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc-nd/3.0/",
+      "provider": "jamendo",
+      "source": "jamendo",
+      "category": "music",
+      "genres": [
+        "jazz",
+        "ragtime"
+      ],
+      "filetype": "mp32",
+      "attribution": "\"Old Movie Ragtime Piano\" by Akashic Records is licensed under CC BY-NC-ND 3.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-nd/3.0/.",
+      "audio_set": {
+        "title": "Silent Movie Ragtime Piano",
+        "foreign_landing_url": "https://www.jamendo.com/album/109404/silent-movie-ragtime-piano"
+      },
+      "duration": 72000,
+      "thumbnail": "https://api.openverse.org/v1/audio/5d08a8ad-73b2-45e8-a26d-e1363add3c85/thumb/"
+    },
+    {
+      "id": "43ec5e30-581f-4022-87b7-6fd1645e23c3",
+      "title": "Ludwig Thuille: Piano Sextet in B-flat major, Op. 6 - III.Gavotte",
+      "foreign_landing_url": "https://www.jamendo.com/track/146588",
+      "url": "https://prod-1.storage.jamendo.com/?trackid=146588&format=mp32",
+      "creator": "OnClassical",
+      "license": "by-nc-sa",
+      "license_version": "3.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
+      "provider": "jamendo",
+      "source": "jamendo",
+      "category": "music",
+      "genres": [
+        "classical"
+      ],
+      "filetype": "mp32",
+      "attribution": "\"Ludwig Thuille: Piano Sextet in B-flat major, Op. 6 - III.Gavotte\" by OnClassical is licensed under CC BY-NC-SA 3.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/.",
+      "audio_set": {
+        "title": "The OnClassical compilation - Classical music",
+        "foreign_landing_url": "https://www.jamendo.com/album/20858/the-onclassical-compilation-classical-music"
+      },
+      "duration": 239000,
+      "thumbnail": "https://api.openverse.org/v1/audio/43ec5e30-581f-4022-87b7-6fd1645e23c3/thumb/"
+    },
+    {
+      "id": "184166dd-da49-4204-90f7-636c4c6df25c",
+      "title": "Inspiring Cinematic Piano (Version 1)",
+      "foreign_landing_url": "https://www.jamendo.com/track/1875141",
+      "url": "https://prod-1.storage.jamendo.com/?trackid=1875141&format=mp32",
+      "creator": "makesound",
+      "license": "by-nc-nd",
+      "license_version": "3.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc-nd/3.0/",
+      "provider": "jamendo",
+      "source": "jamendo",
+      "category": "music",
+      "genres": [
+        "classical",
+        "filmscore",
+        "neoclassical"
+      ],
+      "filetype": "mp32",
+      "attribution": "\"Inspiring Cinematic Piano (Version 1)\" by makesound is licensed under CC BY-NC-ND 3.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-nd/3.0/.",
+      "audio_set": {
+        "title": "Hopeful Uplifting Inspirational Cinematic",
+        "foreign_landing_url": "https://www.jamendo.com/album/450383/hopeful-uplifting-inspirational-cinematic"
+      },
+      "duration": 96000,
+      "thumbnail": "https://api.openverse.org/v1/audio/184166dd-da49-4204-90f7-636c4c6df25c/thumb/"
+    },
+    {
+      "id": "9b26394f-e125-4066-b6e7-fd810416dedd",
+      "title": "<div class='fn'> Bare-faced go-away Bird (Corythaixoides personata)</div>",
+      "foreign_landing_url": "https://commons.wikimedia.org/w/index.php?curid=51633720",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/b/b5/Bare-faced_go-away_Bird_%28Corythaixoides_personata%29_%28022A-WA03044X0032-0005M0%29.ogg",
+      "creator": null,
+      "license": "by",
+      "license_version": "4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "provider": "wikimedia_audio",
+      "source": "wikimedia_audio",
+      "category": null,
+      "genres": null,
+      "filetype": "ogg",
+      "attribution": "\"<div class='fn'> Bare-faced go-away Bird (Corythaixoides personata)</div>\" is licensed under CC BY 4.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/4.0/.",
+      "audio_set": null,
+      "duration": 14257,
+      "thumbnail": null
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000001",
+      "title": null,
+      "foreign_landing_url": null,
+      "url": "https://example.org/audio/track.mp3",
+      "creator": null,
+      "license": "cc0",
+      "license_version": "1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "provider": "freesound",
+      "source": "freesound",
+      "category": null,
+      "genres": null,
+      "filetype": null,
+      "attribution": null,
+      "audio_set": null,
+      "duration": null,
+      "thumbnail": null
+    }
+  ]
+}

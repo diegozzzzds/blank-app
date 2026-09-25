@@ -1,0 +1,99 @@
+{
+  "metadata": {
+    "identifier": "FeelinStrange",
+    "title": "feelin strange",
+    "creator": "Kyle Jordan henry",
+    "licenseurl": "http://creativecommons.org/licenses/by-sa/3.0/",
+    "mediatype": "audio",
+    "collection": [
+      "opensource_audio",
+      "community"
+    ]
+  },
+  "files": [
+    {
+      "name": "FeelinStrange_archive.torrent",
+      "source": "metadata",
+      "btih": "177648d7292ae9d7b095720e5d31c003e09c6137",
+      "mtime": "1613349501",
+      "size": "2281",
+      "md5": "1b718fdb4cd8cbd2e0497ef91b66fd10",
+      "crc32": "cbd5cb4f",
+      "sha1": "0886ab2170c6a5d68d184cd5f355625582dae197",
+      "format": "Archive BitTorrent"
+    },
+    {
+      "name": "FeelinStrange_files.xml",
+      "source": "original",
+      "format": "Metadata",
+      "md5": "5ca093eb3b24fa0a8074390f1cd31713",
+      "summation": "md5"
+    },
+    {
+      "name": "FeelinStrange_meta.xml",
+      "source": "original",
+      "format": "Metadata",
+      "mtime": "1613349500",
+      "size": "894",
+      "md5": "6d26ad1f85ce6f30fe030025a8106010",
+      "crc32": "fc82c8b6",
+      "sha1": "9c2dd97422bb86a8dab0271e2b3c782603c39ebf"
+    },
+    {
+      "name": "SomeKindaJazz.mp3",
+      "source": "original",
+      "format": "VBR MP3",
+      "length": "04:12",
+      "title": "feelin strange",
+      "creator": "Kyle jordan Henry",
+      "bitrate": "192",
+      "mtime": "1335371271",
+      "size": "6053555",
+      "md5": "30a4e82da36cdd3f4b51d6026be2dee8",
+      "crc32": "f99f3a6e",
+      "sha1": "b2e8a71b40bf7c6c59eec1d996b222069fd711dc",
+      "height": "0",
+      "width": "0",
+      "artist": "Kyle jordan Henry",
+      "genre": "Psychedelic Jazz",
+      "external-identifier": "urn:acoustid:74017983-f2ed-4b52-af5b-507c7be3d065",
+      "external-identifier-match-date": "acoustid:2019-04-01T10:12:24Z"
+    },
+    {
+      "name": "SomeKindaJazz.ogg",
+      "source": "derivative",
+      "format": "Ogg Vorbis",
+      "original": "SomeKindaJazz.mp3",
+      "mtime": "1335371332",
+      "size": "2405105",
+      "md5": "5c23b8291483d0e9ade72d111b238fab",
+      "crc32": "4c4cdfc2",
+      "sha1": "1d6f0c27e659f33c4597e47275daff1d56568742",
+      "length": "247",
+      "height": "0",
+      "width": "0"
+    },
+    {
+      "name": "SomeKindaJazz.png",
+      "source": "derivative",
+      "format": "PNG",
+      "original": "SomeKindaJazz.mp3",
+      "mtime": "1414814244",
+      "size": "10809",
+      "md5": "bfe7121b594fd285371635c2919b4135",
+      "crc32": "e898a14b",
+      "sha1": "014247d6dd42b29fde9db58f23f704a2b81163d3"
+    },
+    {
+      "name": "__ia_thumb.jpg",
+      "source": "original",
+      "mtime": "1613349500",
+      "size": "2892",
+      "md5": "8867b5ca95e4dd5c671aeb4f1b81b55b",
+      "crc32": "5f383bdf",
+      "sha1": "8c1e2f78dc68656599ddf7bfd882d14fe6d703a0",
+      "format": "Item Tile",
+      "rotation": "0"
+    }
+  ]
+}

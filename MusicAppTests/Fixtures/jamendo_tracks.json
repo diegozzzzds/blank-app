@@ -1,0 +1,58 @@
+{
+  "headers": {
+    "status": "success",
+    "code": 0,
+    "error_message": "",
+    "warnings": "",
+    "results_count": 2,
+    "results_fullcount": 45
+  },
+  "results": [
+    {
+      "id": "1532771",
+      "name": "Summer Breeze",
+      "duration": 185,
+      "artist_id": "7",
+      "artist_name": "Test Artist",
+      "album_name": "Seasons",
+      "album_id": "42",
+      "license_ccurl": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "position": 1,
+      "releasedate": "2018-06-01",
+      "album_image": "https://usercontent.jamendo.com?type=album&id=42&width=300",
+      "audio": "https://prod-1.storage.jamendo.com/?trackid=1532771&format=mp32",
+      "audiodownload": "https://prod-1.storage.jamendo.com/download/track/1532771/mp32/",
+      "shareurl": "https://www.jamendo.com/track/1532771",
+      "image": "",
+      "musicinfo": {
+        "vocalinstrumental": "instrumental",
+        "tags": {
+          "genres": [
+            "pop",
+            "chillout"
+          ],
+          "instruments": [],
+          "vartags": []
+        }
+      },
+      "audiodownload_allowed": true
+    },
+    {
+      "id": 99,
+      "name": "No Download",
+      "duration": "240",
+      "artist_name": "Other",
+      "album_name": "",
+      "license_ccurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+      "audio": "https://prod-1.storage.jamendo.com/?trackid=99&format=mp32",
+      "audiodownload": "https://prod-1.storage.jamendo.com/download/track/99/mp32/",
+      "image": "https://usercontent.jamendo.com?type=album&id=1&width=300",
+      "audiodownload_allowed": false
+    },
+    {
+      "id": "5",
+      "name": "Missing Audio",
+      "audio": ""
+    }
+  ]
+}

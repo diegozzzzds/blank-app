@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  core-linux:
+    name: Core unit tests (Linux)
+    runs-on: ubuntu-24.04
+    container: swift:6.2-noble
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parse all sources, build Core and run tests
+        run: ./scripts/linux-check.sh
+
+  ios:
+    name: iOS build and unit tests
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          xcrun simctl list runtimes
+      - name: Build (iOS Simulator)
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project MusicApp.xcodeproj \
+            -scheme MusicApp \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            -quiet
+      - name: Unit tests (iOS Simulator)
+        run: |
+          set -o pipefail
+          UDID="$(./scripts/ci-pick-simulator.sh)"
+          xcodebuild test \
+            -project MusicApp.xcodeproj \
+            -scheme MusicApp \
+            -destination "id=${UDID}" \
+            -resultBundlePath TestResults.xcresult \
+            -quiet
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults
+          path: TestResults.xcresult
+          if-no-files-found: ignore
