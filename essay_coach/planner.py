@@ -14,6 +14,7 @@ from datetime import date, timedelta
 from pydantic import BaseModel, Field
 
 from . import mastery
+from .schemas import KCId
 from .skills import CRITERIA, KCS, topo_order
 
 MAX_KCS_PER_WEEK = 4
@@ -62,7 +63,9 @@ def baseline_plan(progress: dict) -> dict:
     n_weeks = weeks_available(profile)
     need = need_scores(progress)
     order = topo_order()
+    # 已学会的、以及诊断显示不需要练的技能，都视为前置条件已满足（否则它们的后续技能永远排不进计划）
     mastered = {k for k, st in progress["kc"].items() if mastery.TIER_RANK[st.get("tier", "new")] >= mastery.TIER_RANK["learned"]}
+    mastered |= {k for k in KCS if need[k] <= 0.15}
     planned: set[str] = set()
     weeks = []
     per_week = 3
@@ -81,6 +84,10 @@ def baseline_plan(progress: dict) -> dict:
                 break
             if k not in chosen and need[k] > 0.15:
                 chosen.append(k)
+        if not chosen and w == 0:
+            # 诊断显示各项都不错：仍然安排一周，挑需要程度最高的（全都学会了就复习最弱的）
+            pool = available or sorted(KCS, key=lambda k: mastery.mastery_pct(progress, k))
+            chosen = sorted(pool, key=lambda k: -need[k])[:per_week] if available else pool[:per_week]
         if not chosen:
             break
         planned.update(chosen)
@@ -101,7 +108,7 @@ def baseline_plan(progress: dict) -> dict:
 
 class WeekPlan(BaseModel):
     title: str = Field(description="本周主题（中文，简短）")
-    kcs: list[str] = Field(description="本周技能点 id，只能来自候选清单，2–4 个")
+    kcs: list[KCId] = Field(description="本周技能点 id，只能来自候选清单，2–4 个")
     goals: list[str] = Field(description="本周学习目标，用“学会/能够 + 具体策略”表述，不写分数目标")
     why: str = Field(description="为什么这周练这些（结合诊断结果）")
     lesson_focus: str = Field(description="本周微课重点")
@@ -121,6 +128,8 @@ def validate_plan(progress: dict, plan: StudyPlan) -> tuple[dict, list[str]]:
     notes: list[str] = []
     need = need_scores(progress)
     mastered = {k for k, st in progress["kc"].items() if mastery.TIER_RANK[st.get("tier", "new")] >= mastery.TIER_RANK["learned"]}
+    mastered |= {k for k in KCS if need[k] <= 0.15}
+    requested = [k for w in plan.weeks for k in w.kcs if k in KCS]
     planned: set[str] = set()
     weeks = []
     carry: list[str] = []
@@ -165,6 +174,10 @@ def validate_plan(progress: dict, plan: StudyPlan) -> tuple[dict, list[str]]:
                 notes.append(f"把高优先级技能“{KCS[k].name}”加入第 {i + 1} 周。")
                 break
     weeks = [w for w in weeks if w["kcs"]]
+    placed = {k for w in weeks for k in w["kcs"]}
+    dropped = [k for k in dict.fromkeys(requested) if k not in placed]
+    if dropped:
+        notes.append("未能安排：" + "、".join(KCS[k].name for k in dropped) + "（前置技能没有排进计划，或计划周数不够）。")
     if not weeks:
         return baseline_plan(progress), ["AI 计划无法通过校验，已使用程序生成的基础计划。"]
     return {"overview": plan.overview, "weeks": weeks, "daily_routine": plan.daily_routine,
@@ -191,7 +204,10 @@ def generate_plan(progress: dict) -> tuple[dict, list[str]]:
 
 
 def install_plan(progress: dict, plan: dict) -> None:
+    import uuid
+
     old = progress.get("plan") or {}
+    plan["id"] = uuid.uuid4().hex[:8]
     plan["created"] = date.today().isoformat()
     plan["current_week"] = 0
     plan["history"] = old.get("history", []) + ([{"created": old.get("created"), "weeks": len(old.get("weeks", []))}]

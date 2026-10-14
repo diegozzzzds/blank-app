@@ -12,6 +12,11 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from .skills import KCS
+
+# 技能点 id 用枚举约束：结构化输出只能从技能图谱里选，AI 不能自己发明
+KCId = Literal[tuple(KCS)]
+
 
 class CriterionEstimate(BaseModel):
     name: str = Field(description="评分维度名称，与评分标准的名称和顺序一致")
@@ -21,7 +26,7 @@ class CriterionEstimate(BaseModel):
 
 class PriorityIssue(BaseModel):
     criterion: str = Field(description="对应的评分维度")
-    kc: str = Field(description="对应的技能点 id，必须来自给定的技能清单")
+    kc: KCId = Field(description="对应的技能点 id，来自给定的技能清单")
     quote: str = Field(description="从原文逐字复制的片段（3–30 个词），用于定位")
     problem: str = Field(description="问题是什么")
     why: str = Field(description="为什么是问题：对应的规则或评分描述")
@@ -35,14 +40,14 @@ class ErrorInstance(BaseModel):
 
 
 class ErrorPattern(BaseModel):
-    kc: str = Field(description="对应的技能点 id，必须来自给定的技能清单")
+    kc: KCId = Field(description="对应的技能点 id，来自给定的技能清单")
     pattern: str = Field(description="错误模式名称，如“逗号连句”")
     rule: str = Field(description="一句话规则")
     instances: list[ErrorInstance] = Field(description="最多 3 处例子")
 
 
 class KCEvidence(BaseModel):
-    kc: str = Field(description="技能点 id")
+    kc: KCId = Field(description="技能点 id")
     status: Literal["demonstrated", "weak", "missing"] = Field(
         description="demonstrated=文中正确运用了；weak=用了但有明显问题；missing=应该有但没有")
     note: str = Field(description="依据（简短）")

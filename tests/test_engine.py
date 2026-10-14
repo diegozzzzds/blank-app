@@ -126,7 +126,9 @@ def test_fix_grading_normalizes_but_rejects_unchanged():
     item = bank("sent_boundary")[-1]
     assert item.format == "fix"
     assert drills.grade_auto(item, "It is late; we should go home")[0] == 1.0
-    assert drills.grade_auto(item, "  it is late,  so we should go home. ")[0] == 1.0
+    assert drills.grade_auto(item, "  It is late,  so we should go home. ")[0] == 1.0
+    assert drills.grade_auto(item, "it is late, so we should go home")[0] == -1.0  # 大小写不同：交给 AI
+    assert drills.grade_auto(item, "It is late , so we should go home .")[0] == -1.0
     assert drills.grade_auto(item, item.content)[0] == 0.0
     assert drills.grade_auto(item, "It is late, we should went home.")[0] == -1.0  # 需要 AI 判分
 
@@ -147,11 +149,12 @@ def test_streak_with_freeze(progress):
 
 
 def test_ai_plan_is_repaired(progress):
-    bad = planner.StudyPlan(overview="o", daily_routine="d", milestones=[], weeks=[
-        planner.WeekPlan(title="w1", kcs=["critical_questions", "made_up", "articles"], goals=["g"], why="y",
-                         lesson_focus="l", essay_task="e", checkpoint=False),
-        planner.WeekPlan(title="w2", kcs=["prompt_analysis", "thesis", "topic_sentence", "support_evidence"],
-                         goals=["g"], why="y", lesson_focus="l", essay_task="e", checkpoint=False),
+    # 结构化输出已经限制了技能 id；这里用 model_construct 绕过校验，测试程序侧的兜底修复
+    week = lambda title, kcs: planner.WeekPlan.model_construct(  # noqa: E731
+        title=title, kcs=kcs, goals=["g"], why="y", lesson_focus="l", essay_task="e", checkpoint=False)
+    bad = planner.StudyPlan.model_construct(overview="o", daily_routine="d", milestones=[], weeks=[
+        week("w1", ["critical_questions", "made_up", "articles"]),
+        week("w2", ["prompt_analysis", "thesis", "topic_sentence", "support_evidence"]),
     ])
     plan, notes = planner.validate_plan(progress, bad)
     seen: set[str] = set()
@@ -189,3 +192,149 @@ def test_items_problem_checks():
     personal = Item(id="me-x", kc="articles", format="fix", difficulty=3, instruction="i", content="I have a apple.",
                     source="personal")
     assert personal.problems() == [] and drills.needs_ai(personal)
+
+
+def test_personal_fix_that_only_changes_spacing_is_not_called_unchanged():
+    item = Item(id="me-1", kc="punctuation", format="fix", difficulty=3, instruction="i",
+                content="In my opinion , i believe technology is good.", source="personal")
+    assert drills.grade_auto(item, "In my opinion, I believe technology is good.")[0] == -1.0
+
+
+def test_corrected_after_wrong_attempt_is_still_retested(progress):
+    session = drills.new_session("kc", "articles")
+    it, *_ = drills.next_item(progress, session, ai_ready=False)
+    drills.finish_item(progress, session, it, 1.0, 0, False, "有把握", 10, None, "x", wrong=1)
+    assert session["requeue"] == [{"kc": "articles", "after": session["count"] + 1}]
+    assert len(progress["mistakes"]) == 1  # 有把握却答错过：记入错题本
+    assert progress["kc"]["articles"]["streak"] == 0
+
+
+def test_empty_plan_does_not_crash(progress):
+    progress["plan"] = {"weeks": [], "current_week": 0}
+    session = drills.new_session("today")
+    it, *_ = drills.next_item(progress, session, ai_ready=False)
+    assert it is not None
+
+
+def test_strong_student_still_gets_a_plan(progress):
+    progress["diagnostic"] = {"strong_kcs": list(KCS), "criterion_gap": {c: 0.1 for c in
+                              ("task", "argument", "coherence", "lexis", "grammar")}}
+    assert planner.baseline_plan(progress)["weeks"]
+
+
+def test_retained_needs_real_gap_not_just_midnight(progress):
+    items = bank("sent_boundary")
+    for n in range(6):
+        mastery.record(progress, items[n % 5], 1.0, 0, False, True, 20, when=T0 + timedelta(minutes=n))
+    st = progress["kc"]["sent_boundary"]
+    assert st["tier"] == "learned"
+    late = T0.replace(hour=15, minute=58)  # 北京时间 23:58
+    mastery.record(progress, items[0], 1.0, 0, False, True, 20, when=late + timedelta(days=1))
+    mastery.record(progress, items[1], 1.0, 0, False, True, 20, when=late + timedelta(days=1, minutes=5))
+    assert st["tier"] == "learned"
+
+
+def test_streak_freeze_covers_yesterday(progress):
+    today = store.study_day()
+    for d in range(2, 9):
+        progress["days"][(today - timedelta(days=d)).isoformat()] = {"items": 12, "done": 12, "solo_correct": 5}
+    count, met = drills.streak(progress)
+    assert not met and count == 7
+
+
+def test_revealed_items_do_not_count_for_streak(progress):
+    today = store.study_day()
+    progress["days"][today.isoformat()] = {"items": 12, "done": 4, "solo_correct": 0}
+    assert drills.streak(progress) == (0, False)
+
+
+def test_flagged_personal_item_not_served_again(progress):
+    personal = {"id": "me-x", "kc": "articles", "format": "fix", "difficulty": 3, "instruction": "i",
+                "content": "I have a apple.", "source": "personal"}
+    m = drills.add_mistake(progress, "articles", "I have a apple.", "n", "essay", personal_item=personal)
+    m["card"]["due"] = (datetime.now(timezone.utc) - timedelta(minutes=1)).isoformat()
+    drills.flag_item(progress, "me-x")
+    it, reason, *_ = drills.next_item(progress, drills.new_session("mistakes"), ai_ready=True)
+    assert it.id != "me-x"
+
+
+def test_offline_due_mistakes_only_counts_servable(progress):
+    m = drills.add_mistake(progress, "hedging", "x", "n", "drill")  # 测试题库里没有 hedging 的题
+    m["card"]["due"] = (datetime.now(timezone.utc) - timedelta(minutes=1)).isoformat()
+    assert drills.due_mistakes(progress, ai_ready=False) == []
+    assert len(drills.due_mistakes(progress, ai_ready=True)) == 1
+
+
+def test_answer_text_is_readable():
+    item = bank("articles")[0]
+    assert item.options[1] in drills.answer_text(item, 1)
+
+
+def test_assisted_correct_does_not_raise_mastery(progress):
+    item = bank("articles")[0]
+    before = mastery.kc_state(progress, "articles")["theta"]
+    st = mastery.record(progress, item, 1.0, 1, False, None, 30, when=T0)
+    assert st["theta"] <= before and st["ema"] == 0.0
+
+
+def test_ai_score_just_above_threshold_counts_as_correct(progress):
+    items = bank("thesis")
+    for n in range(6):
+        st = mastery.record(progress, items[n % 4], 0.8, 0, False, None, 30, when=T0 + timedelta(minutes=n))
+    assert st["ema"] >= mastery.LEARNED_EMA
+
+
+def test_failed_review_resets_retention_progress(progress):
+    items = bank("sent_boundary")
+    for n in range(6):
+        mastery.record(progress, items[n % 5], 1.0, 0, False, True, 20, when=T0 + timedelta(minutes=n))
+    st = mastery.record(progress, items[0], 1.0, 0, False, True, 20, when=T0 + timedelta(days=2))
+    assert len(st["reviews_ok"]) == 1
+    st = mastery.record(progress, items[1], 0.0, 0, False, True, 20, when=T0 + timedelta(days=4))
+    assert st["reviews_ok"] == [] and st["tier"] == "learned"
+
+
+def test_old_cards_are_pulled_before_exam(progress):
+    card = mastery.review_card(progress, None, mastery.Rating.Good, T0)
+    card["due"] = (T0 + timedelta(days=60)).isoformat()
+    progress["profile"]["exam_date"] = (T0 + timedelta(days=10)).date().isoformat()
+    assert mastery.effective_due(card, progress) < T0 + timedelta(days=10)
+
+
+def test_requeued_skill_waits_for_intervening_items(progress):
+    progress["plan"] = {"weeks": [{"kcs": ["articles", "sent_boundary", "thesis"]}], "current_week": 0}
+    session = drills.new_session("today")
+    it, *_ = drills.next_item(progress, session, ai_ready=False)
+    drills.finish_item(progress, session, it, 0.0, 0, True, None, 10, None, "x")
+    nxt, *_ = drills.next_item(progress, session, ai_ready=False)
+    assert nxt.kc != it.kc
+
+
+def test_baseline_schedules_dependents_of_strong_prerequisites(progress):
+    progress["diagnostic"] = {"strong_kcs": ["prompt_analysis"], "weak_kcs": ["thesis"],
+                              "criterion_gap": {"task": 0.1}}
+    plan = planner.baseline_plan(progress)
+    assert any("thesis" in w["kcs"] for w in plan["weeks"])
+
+
+def test_migrate_drops_unknown_skills_and_bad_types():
+    data = {"kc": {"gone_skill": {"tier": "learned"}, "articles": {"tier": "learning"}}, "attempts": "oops",
+            "plan": {"weeks": [{"kcs": ["gone_skill", "thesis"]}]}, "focus_kcs": ["gone_skill"], "mistakes": [1, 2]}
+    p = store._migrate(data)
+    assert list(p["kc"]) == ["articles"] and p["attempts"] == [] and p["mistakes"] == []
+    assert p["plan"]["weeks"][0]["kcs"] == ["thesis"] and p["focus_kcs"] == []
+
+
+def test_ap_rubric_maps_to_criteria():
+    from essay_coach.essays import _criterion_gaps
+    from essay_coach.rubrics import RUBRICS
+    crit = [{"name": c["name"], "score": 0, "max_score": c["max"]} for c in RUBRICS["ap_argument"]["criteria"]]
+    assert _criterion_gaps("ap_argument", crit)
+
+
+def test_generated_items_fail_closed(progress, monkeypatch):
+    import fake_claude
+    made = drills.generate_items(progress, "hedging")
+    assert len(made) == 1  # 第 2 题核对未通过
+    monkeypatch.setitem(fake_claude.SAMPLES, "ItemCheckBatch", lambda req: {"results": []})  # 核对漏掉了所有题
+    assert drills.generate_items(progress, "register") == []

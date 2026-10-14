@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 import streamlit as st
 
-from essay_coach import drills, store, ui
+from essay_coach import ai, drills, store, ui
 from essay_coach.skills import KCS
 
 progress = store.progress()
@@ -15,7 +15,7 @@ st.caption("做错的题和作文里的语言错误都会进入错题本。它�
 mistakes = progress["mistakes"]
 active = [m for m in mistakes if not m.get("retired")]
 retired = [m for m in mistakes if m.get("retired")]
-due = drills.due_mistakes(progress)
+due = drills.due_mistakes(progress, ai_ready=ai.is_ready())
 
 c1, c2, c3 = st.columns(3)
 c1.metric("待巩固", len(active), border=True)

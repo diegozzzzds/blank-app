@@ -87,20 +87,23 @@ def pick_item(progress: dict, kc: str, exclude: set[str], ai_ready: bool) -> Ite
 
 def new_session(mode: str, kc: str | None = None, goal: int = 15) -> dict:
     return {"mode": mode, "kc": kc, "goal": goal, "count": 0, "correct": 0, "requeue": [],
-            "recent_kcs": [], "seen": [], "current": None, "log": []}
+            "recent_kcs": [], "seen": [], "current": None, "log": [], "gen_tried": []}
 
 
 def current_week_kcs(progress: dict) -> list[str]:
-    plan = progress.get("plan")
-    if not plan:
-        return []
-    week = plan["weeks"][min(plan.get("current_week", 0), len(plan["weeks"]) - 1)]
-    return [k for k in week["kcs"] if k in KCS]
+    from .planner import current_week
+
+    week = current_week(progress)
+    return [k for k in week["kcs"] if k in KCS] if week else []
 
 
-def due_mistakes(progress: dict, when: datetime | None = None) -> list[dict]:
+def due_mistakes(progress: dict, when: datetime | None = None, ai_ready: bool = True) -> list[dict]:
+    """到期的错题。离线时只算有题可出的（自己的句子需要 AI 判分，同类题至少要有一道能自动判分）。"""
     when = when or datetime.now(timezone.utc)
-    return [m for m in progress["mistakes"] if not m.get("retired") and mastery.card_due(m.get("card"), when)]
+    due = [m for m in progress["mistakes"] if not m.get("retired") and mastery.card_due(m.get("card"), when, progress)]
+    if ai_ready:
+        return due
+    return [m for m in due if pick_item(progress, m["kc"], set(), False) is not None]
 
 
 def weakest_unlocked(progress: dict, exclude: list[str]) -> list[str]:
@@ -113,7 +116,7 @@ def _too_repetitive(session: dict, kc: str) -> bool:
     return session["recent_kcs"][-2:] == [kc, kc]
 
 
-def candidate_kcs(progress: dict, session: dict) -> list[tuple[str, str, dict | None]]:
+def candidate_kcs(progress: dict, session: dict, ai_ready: bool = True) -> list[tuple[str, str, dict | None]]:
     """按优先级返回 (技能, 原因, 关联错题)。"""
     out: list[tuple[str, str, dict | None]] = []
     for r in session["requeue"]:
@@ -122,7 +125,7 @@ def candidate_kcs(progress: dict, session: dict) -> list[tuple[str, str, dict | 
     if session["mode"] == "kc" and session["kc"]:
         out.append((session["kc"], "指定练习", None))
         return out
-    mistakes = due_mistakes(progress)
+    mistakes = due_mistakes(progress, ai_ready=ai_ready)
     for m in mistakes:
         out.append((m["kc"], "错题复习", m))
     if session["mode"] == "mistakes":
@@ -134,8 +137,15 @@ def candidate_kcs(progress: dict, session: dict) -> list[tuple[str, str, dict | 
             out.append((k, "上篇作文的弱项", None))
     for k in current_week_kcs(progress):
         out.append((k, "本周学习目标", None))
-    for k in weakest_unlocked(progress, [c[0] for c in out])[:6]:
-        out.append((k, "薄弱技能", None))
+    # 补充最薄弱的可学技能；离线时跳过已经没有可做题目的技能，避免练习提前结束
+    seen = set(session["seen"])
+    added = 0
+    for k in weakest_unlocked(progress, [c[0] for c in out]):
+        if added >= 6:
+            break
+        if ai_ready or pick_item(progress, k, seen, False) is not None:
+            out.append((k, "薄弱技能", None))
+            added += 1
     return out
 
 
@@ -143,18 +153,24 @@ def next_item(progress: dict, session: dict, ai_ready: bool) -> tuple[Item | Non
     """返回 (题目, 原因, 关联错题, 需要 AI 生成题目的技能)。"""
     seen = set(session["seen"])
     need_gen = None
-    cands = candidate_kcs(progress, session)
-    # 交错：先尝试不会造成连续 3 次同一技能的候选
-    ordered = [c for c in cands if not _too_repetitive(session, c[0])] + [c for c in cands if _too_repetitive(session, c[0])]
+    cands = candidate_kcs(progress, session, ai_ready)
+    # 刚做错、还在等待再测的技能先不出（保证中间隔开几题）；同一技能不连续出现 3 次（交错练习）
+    waiting = {r["kc"] for r in session["requeue"] if r["after"] > session["count"]}
+
+    def rank(c):
+        return (c[0] in waiting and not c[1].startswith("再测"), _too_repetitive(session, c[0]))
+
+    ordered = sorted(cands, key=rank)
     for kc, reason, mistake in ordered:
-        if mistake and mistake.get("item") and not mistake.get("personal_done"):
+        flagged = set(progress.get("flagged_items", []))
+        if mistake and mistake.get("item") and not mistake.get("personal_done") and mistake["item"]["id"] not in flagged:
             it = Item.model_validate(mistake["item"])
             if it.id not in seen and (ai_ready or not needs_ai(it)):
                 return it, reason, mistake, None
         it = pick_item(progress, kc, seen, ai_ready)
         if it:
             return it, reason, mistake, None
-        if need_gen is None and ai_ready:
+        if need_gen is None and ai_ready and kc not in session.get("gen_tried", []):
             need_gen = kc
     return None, "", None, need_gen
 
@@ -164,10 +180,14 @@ def next_item(progress: dict, session: dict, ai_ready: bool) -> tuple[Item | Non
 _QUOTES = str.maketrans({"’": "'", "‘": "'", "“": '"', "”": '"', " ": " "})
 
 
+def _clean(text: str) -> str:
+    """只统一引号和空白，保留大小写和标点前的空格。"""
+    return re.sub(r"\s+", " ", text.translate(_QUOTES)).strip()
+
+
 def normalize(text: str) -> str:
-    t = text.translate(_QUOTES).strip()
-    t = re.sub(r"\s+", " ", t)
-    t = re.sub(r"\s+([,.;:!?])", r"\1", t)
+    """宽松比较：再忽略大小写、标点前的空格和句末句号。只用来判断“是否需要交给 AI”。"""
+    t = re.sub(r"\s+([,.;:!?])", r"\1", _clean(text))
     return t.rstrip(".").lower()
 
 
@@ -194,10 +214,14 @@ def grade_auto(item: Item, response) -> tuple[float, str]:
         pairs = sum(1 for a, b in zip(response, response[1:]) if b == a + 1)
         return round(pairs / (len(item.sentences) - 1) * 0.7, 2), ""
     if item.format == "fix":
-        if normalize(response or "") == normalize(item.content):
+        answer = _clean(response or "")
+        if answer == _clean(item.content):
             return 0.0, "你还没有修改原句。"
-        if any(normalize(response or "") == normalize(a) for a in item.accepted):
+        # 和参考答案完全一致（只允许句末句号不同）才直接判对
+        if any(answer.rstrip(".") == _clean(a).rstrip(".") for a in item.accepted):
             return 1.0, ""
+        if any(normalize(answer) == normalize(a) for a in item.accepted):
+            return -1.0, "和参考答案只差大小写或标点前的空格，请检查一下。"
         return -1.0, ""  # 需要 AI 判断
     return -1.0, ""
 
@@ -249,20 +273,19 @@ def generate_items(progress: dict, kc: str, n: int = 4) -> list[Item]:
     difficulty = int(min(5, max(1, round(target_b / 0.8 + 3))))
     examples = [i for i in seed_items() if i.kc == kc][:3]
     seen_contents = [i.content or i.instruction for i in all_items(progress) if i.kc == kc][-15:]
-    personal = [m["text"] for m in progress["mistakes"] if m["kc"] == kc and m.get("text")][-5:]
+    personal = [m["text"] for m in progress["mistakes"]
+                if m["kc"] == kc and m.get("text") and m.get("format", "fix") not in AUTO_GRADED][-5:]
     system, user = prompts.item_generation_request(kc, n, difficulty, examples, seen_contents, personal,
                                                    (progress.get("profile") or {}).get("level", "高中"))
     batch = ai.structured(system, user, ItemBatch, max_tokens=16000, effort="medium")
     # 第二次调用逐题核对答案（Pardos & Bhandari 2024：未经核对的 AI 提示有相当比例不合格）
+    # 核对失败或漏掉的题一律不用（宁可少出题，也不让没核对过的题给学生做）
     vsys, vuser = prompts.item_check_request(kc, [d.model_dump() for d in batch.items])
-    try:
-        checks = ai.structured(vsys, vuser, ItemCheckBatch, max_tokens=6000, effort="low")
-        bad = {c.index for c in checks.results if not c.ok}
-    except ai.AIError:
-        bad = set()
+    checks = ai.structured(vsys, vuser, ItemCheckBatch, max_tokens=6000, effort="low")
+    passed = {c.index for c in checks.results if c.ok}
     made = []
     for n, d in enumerate(batch.items, 1):
-        if n in bad:
+        if n not in passed:
             continue
         digest = hashlib.sha1(f"{kc}|{d.content}|{d.instruction}|{d.options}".encode()).hexdigest()[:10]
         try:
@@ -293,6 +316,7 @@ def add_mistake(progress: dict, kc: str, text: str, note: str, source: str,
         "kc": kc, "text": text, "note": note, "source": source,
         "item_id": item.id if item else (personal_item or {}).get("id"),
         "item": personal_item, "personal_done": False,
+        "format": item.format if item else (personal_item or {}).get("format", "fix"),
         "created": when.isoformat(), "card": card, "reviews_ok": [], "retired": False,
     }
     progress["mistakes"].append(m)
@@ -302,7 +326,7 @@ def add_mistake(progress: dict, kc: str, text: str, note: str, source: str,
 def review_mistake(progress: dict, mistake: dict, item: Item, correct: bool, solo: bool,
                    when: datetime | None = None) -> None:
     when = when or store.now()
-    day = when.date().isoformat()
+    day = store.study_day(when).isoformat()
     if mistake.get("item") and item.id == mistake["item"]["id"] and correct:
         mistake["personal_done"] = True
     rating = mastery.Rating.Good if (correct and solo) else mastery.Rating.Again
@@ -315,45 +339,66 @@ def review_mistake(progress: dict, mistake: dict, item: Item, correct: bool, sol
         mistake["retired"] = True
 
 
+def answer_text(item: Item, response) -> str:
+    """把学生的作答转成可读文字（写进错题本）。"""
+    if item.format in ("mcq", "judge"):
+        chosen = item.options[response] if isinstance(response, int) and 0 <= response < len(item.options) else "（未作答）"
+        return f"{item.content}\n我的选择：{chosen}".strip()
+    if item.format == "order":
+        order = [item.sentences[i] for i in (response or []) if 0 <= i < len(item.sentences)]
+        return "我的顺序：" + " / ".join(order)
+    return str(response or "")
+
+
 def finish_item(progress: dict, session: dict, item: Item, score: float, hints: int, revealed: bool,
-                confidence: str | None, seconds: float, mistake: dict | None, answer_text: str) -> dict:
-    """一道题结束（答对或看了答案）时调用：更新掌握度、错题本、本次练习队列。"""
+                confidence: str | None, seconds: float, mistake: dict | None, answer: str, wrong: int = 0) -> dict:
+    """一道题结束（答对或看了答案）时调用：更新掌握度、错题本、本次练习队列。
+
+    hints：看了几级提示；wrong：答错了几次后才做对。两者都算“有帮助”。
+    """
     correct = score >= 0.8 and not revealed
-    solo = hints == 0 and not revealed
+    assisted = hints + wrong
+    solo = assisted == 0 and not revealed
+    missed = not correct or wrong > 0  # 中途答错过，即使后来改对了，也要再测
     confident = {"有把握": True, "不太确定": False, "猜的": False}.get(confidence or "")
-    kc_st = mastery.record(progress, item, score, hints, revealed, confident, seconds)
+    kc_st = mastery.record(progress, item, score, assisted, revealed, confident, seconds)
     progress["attempts"].append({
         "t": store.now().isoformat(), "item": item.id, "kc": item.kc, "format": item.format,
-        "score": round(score, 2), "hints": hints, "revealed": revealed, "confidence": confidence,
+        "score": round(score, 2), "hints": hints, "wrong": wrong, "revealed": revealed, "confidence": confidence,
         "seconds": round(seconds, 1), "mode": session["mode"],
     })
     day = _day_stats(progress)
     day["items"] += 1
+    day["done"] = day.get("done", 0) + int(not revealed)  # 连续学习天数只算没看答案的题
     day["solo_correct"] += int(correct and solo)
 
     if mistake:
         review_mistake(progress, mistake, item, correct, solo)
-    elif not correct or hints >= 2:
-        add_mistake(progress, item.kc, answer_text, item.explanation[:200], "drill", item=item)
+    elif not correct or hints >= 2 or (wrong and confident):
+        add_mistake(progress, item.kc, answer, item.explanation[:200], "drill", item=item)
 
     session["count"] += 1
     session["correct"] += int(correct and solo)
     session["seen"].append(item.id)
     session["recent_kcs"].append(item.kc)
     session["requeue"] = [r for r in session["requeue"] if not (r["kc"] == item.kc and r["after"] <= session["count"] - 1)]
-    if not correct:
-        times = sum(1 for x in session["log"] if x["kc"] == item.kc and not x["correct"])
+    if missed:
+        times = sum(1 for x in session["log"] if x["kc"] == item.kc and x.get("missed", not x["correct"]))
         if times < MAX_REQUEUE:
             # 有把握却答错（高信心错误）更早再测（Metcalfe 2017：这类错误最容易被纠正）
             gap = 1 if confident else REQUEUE_GAP
             session["requeue"].append({"kc": item.kc, "after": session["count"] + gap})
-    session["log"].append({"kc": item.kc, "item": item.id, "correct": correct, "solo": solo, "score": score})
+    session["log"].append({"kc": item.kc, "item": item.id, "correct": correct, "solo": solo, "score": score,
+                           "missed": missed})
     store.save()
     return kc_st
 
 
 def flag_item(progress: dict, item_id: str) -> None:
     progress.setdefault("flagged_items", []).append(item_id)
+    for m in progress["mistakes"]:  # 被报告的“自己的句子”题不再出现，错题改用同类题复习
+        if m.get("item") and m["item"]["id"] == item_id:
+            m["personal_done"] = True
     store.save()
 
 
@@ -362,22 +407,26 @@ def flag_item(progress: dict, item_id: str) -> None:
 MEANINGFUL_ITEMS = 10
 
 
+def _qualifies(progress: dict, d) -> bool:
+    rec = progress["days"].get(d.isoformat(), {})
+    return rec.get("done", rec.get("items", 0)) >= MEANINGFUL_ITEMS
+
+
 def streak(progress: dict) -> tuple[int, bool]:
-    """连续学习天数（每天独立完成至少 10 题才算），每 7 天允许 1 次“补签”。返回 (天数, 今天是否已达标)。"""
-    days = progress["days"]
-    today = datetime.now(timezone.utc).date()
-    met_today = days.get(today.isoformat(), {}).get("items", 0) >= MEANINGFUL_ITEMS
-    count, d, freezes = 0, today if met_today else today - timedelta(days=1), 0
-    while True:
-        if days.get(d.isoformat(), {}).get("items", 0) >= MEANINGFUL_ITEMS:
+    """连续学习天数：每天完成至少 10 题（不含看答案的题）才算；每连续 7 天可以用 1 次“补签”跳过一天。
+    今天还没达标时从昨天算起。返回 (天数, 今天是否已达标)。"""
+    today = store.study_day()
+    met_today = _qualifies(progress, today)
+    d = today if met_today else today - timedelta(days=1)
+    count = freezes = 0
+    for _ in range(3650):
+        if _qualifies(progress, d):
             count += 1
-        elif freezes < 1 + count // 7 and count > 0:
-            freezes += 1
+        elif freezes < 1 + count // 7 and _qualifies(progress, d - timedelta(days=1)):
+            freezes += 1  # 只断了一天、前一天有练习：用补签接上
         else:
             break
         d -= timedelta(days=1)
-        if count > 3650:
-            break
     return count, met_today
 
 

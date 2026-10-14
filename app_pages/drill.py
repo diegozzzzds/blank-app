@@ -25,7 +25,7 @@ if "drill" not in ss:
         kc = None
         if mode == "kc":
             kc = st.selectbox("技能", list(KCS), format_func=lambda k: f"{KCS[k].name}（{KCS[k].en}）")
-        due = len(drills.due_mistakes(progress))
+        due = len(drills.due_mistakes(progress, ai_ready=ai.is_ready()))
         if mode == "mistakes":
             st.caption(f"今天到期的错题：{due} 道")
         if st.button("开始", type="primary", icon=":material/play_arrow:"):
@@ -63,8 +63,11 @@ else:
     if cur is None or cur.get("finished_next"):
         item, reason, mistake, need_gen = drills.next_item(progress, session, ai_ready)
         if item is None and need_gen and ai_ready:
-            made = ui.run_ai(f"正在为“{KCS[need_gen].name}”出新题…", drills.generate_items, progress, need_gen)
-            if made:
+            made = ui.run_ai(f"正在为“{KCS[need_gen].name}”出新题（出题后会再核对一遍）…",
+                             drills.generate_items, progress, need_gen)
+            if not made:  # 出题失败：这次练习不再为这个技能自动重试，避免每次刷新都重复调用
+                session.setdefault("gen_tried", []).append(need_gen)
+            else:
                 item, reason, mistake, need_gen = drills.next_item(progress, session, ai_ready)
         if item is None:
             if session["mode"] == "mistakes":
@@ -142,15 +145,29 @@ else:
                     cur["revealed"] = True
                     cur["finished"] = True
                     seconds = (cur["first_submit"] or time.time()) - cur["start"]
-                    drills.finish_item(progress, session, item, 0.0, cur["hints"] + cur["wrong"], True,
-                                       cur.get("confidence") or ss.get(f"conf_{key}"), seconds, mistake, str(response))
+                    drills.finish_item(progress, session, item, 0.0, cur["hints"], True,
+                                       cur.get("confidence") or ss.get(f"conf_{key}"), seconds, mistake,
+                                       drills.answer_text(item, response), wrong=cur["wrong"])
                     st.rerun()
 
-                if submit:
+                # 这些提交不算一次尝试，避免不动脑就解锁提示和答案
+                attempt_key = drills.answer_text(item, response).strip()
+                not_an_attempt = None
+                if item.format == "order" and response and len(response) != len(item.sentences):
+                    not_an_attempt = "请把所有句子都排进去再提交。"
+                elif item.format == "fix" and drills.grade_auto(item, response) == (0.0, "你还没有修改原句。"):
+                    not_an_attempt = "你还没有修改原句，先找出问题再改。"
+                elif attempt_key in cur.setdefault("tried", []):
+                    not_an_attempt = "这个答案刚才已经提交过了，换个思路再试试。"
+                if submit and not_an_attempt:
+                    st.warning(not_an_attempt, icon=":material/info:")
+                elif submit:
+                    cur["tried"].append(attempt_key)
                     if cur["first_submit"] is None:
                         cur["first_submit"] = time.time()
                         cur["confidence"] = ss.get(f"conf_{key}")
                     result = {"score": 0.0, "feedback": "", "hint": "", "good": "", "rule": ""}
+                    fb = ""
                     if item.format in AUTO_GRADED or item.format == "fix":
                         score, fb = drills.grade_auto(item, response)
                         # 选择题的选项解析可能直接写出正确答案，答完这题之后才统一展示
@@ -168,14 +185,14 @@ else:
                                 result = None
                         else:
                             result.update(score=0.0, offline=True,
-                                          feedback="离线模式下只能和参考答案精确比对，你的答案和参考答案不同。")
+                                          feedback=fb or "离线模式下只能和参考答案精确比对，你的答案和参考答案不同。")
                     if result is not None:
                         cur["result"] = result
                         if result["score"] >= 0.8:
                             cur["finished"] = True
-                            drills.finish_item(progress, session, item, result["score"], cur["hints"] + cur["wrong"],
+                            drills.finish_item(progress, session, item, result["score"], cur["hints"],
                                                False, cur.get("confidence"), cur["first_submit"] - cur["start"],
-                                               mistake, str(response))
+                                               mistake, drills.answer_text(item, response), wrong=cur["wrong"])
                         else:
                             cur["wrong"] += 1
                         st.rerun()
@@ -202,8 +219,8 @@ else:
             if finished:
                 if cur["revealed"]:
                     st.warning("这题看了答案，不算做对。稍后会用同类新题再考你，也已加入错题本。", icon=":material/visibility:")
-                    st.text_input("看完答案后，用自己的话说说为什么这样才对（自我解释能帮你记住规则）",
-                                  key=f"explain_{key}")
+                    explain = st.text_input("看完答案后，用自己的话说说为什么这样才对（写一句就行，自我解释能帮你记住规则）",
+                                            key=f"explain_{key}")
                 else:
                     extra = "" if cur["wrong"] == 0 and cur["hints"] == 0 else "（有提示/重试，掌握度按“有帮助”计算）"
                     st.success(f"答对了！{extra}", icon=":material/check:")
@@ -236,7 +253,12 @@ else:
                     with st.popover("规则卡", icon=":material/menu_book:"):
                         st.markdown(rule)
                 cols = st.columns([1, 1, 3])
-                if cols[0].button("下一题", type="primary", key=f"next_{key}", icon=":material/arrow_forward:"):
+                need_explain = cur["revealed"] and len((ss.get(f"explain_{key}") or "").strip()) < 4
+                if cols[0].button("下一题", type="primary", key=f"next_{key}", icon=":material/arrow_forward:",
+                                  disabled=need_explain, help="先写一句自己的解释" if need_explain else None):
+                    if cur["revealed"] and progress["attempts"]:
+                        progress["attempts"][-1]["explain"] = ss.get(f"explain_{key}", "").strip()
+                        store.save()
                     cur["finished_next"] = True
                     st.rerun()
                 if cols[1].button("这题有问题", key=f"flag_{key}", icon=":material/flag:",

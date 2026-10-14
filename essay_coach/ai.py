@@ -63,14 +63,12 @@ def _request(system: str, messages: list[dict], max_tokens: int, schema: type[Ba
 
 
 def _final_text(message) -> str:
-    """取最终回答的文本。若发生了模型回退，丢弃回退前那个模型的半截输出。"""
-    parts: list[str] = []
-    for block in message.content:
-        if block.type == "fallback":
-            parts = []
-        elif block.type == "text":
-            parts.append(block.text)
-    return "".join(parts)
+    """取最终回答的文本。
+
+    服务端回退发生在输出中途时，备用模型会接着前一个模型已输出的文字继续写（fallback 块只是分界标记），
+    所以要把所有文本块按顺序拼起来，而不是丢掉前半段。
+    """
+    return "".join(block.text for block in message.content if block.type == "text")
 
 
 @contextmanager
@@ -91,6 +89,12 @@ def _friendly_errors():
         raise AIError(f"AI 服务暂时不可用（{e.status_code}），请稍后重试。") from e
     except anthropic.APIConnectionError as e:
         raise AIError("无法连接到 AI 服务，请检查网络后重试。") from e
+    except anthropic.APIError as e:
+        raise AIError("AI 服务返回了错误，请稍后重试。") from e
+    except AIError:
+        raise
+    except Exception as e:  # 流式传输中途断网等传输层错误（Streamlit 的控制流异常是 BaseException，不受影响）
+        raise AIError("和 AI 服务的连接中断了，请重试。") from e
 
 
 def structured(system: str, user: str, schema: type[T], max_tokens: int = 32000, effort: str | None = None) -> T:
@@ -103,6 +107,8 @@ def structured(system: str, user: str, schema: type[T], max_tokens: int = 32000,
 
     if message.stop_reason == "refusal":
         raise AIError("AI 没有完成这次请求（被安全策略拦截）。请检查内容后重试。")
+    if message.stop_reason is None:
+        raise AIError("回复没有完整传回来，请重试。")
     if message.stop_reason == "max_tokens":
         raise AIError("AI 的回复太长被截断了。请缩短文章，或分段提交。")
     try:
@@ -119,9 +125,7 @@ def stream_markdown(placeholder, system: str, messages: list[dict], max_tokens: 
     with _friendly_errors():
         with _client(api_key()).beta.messages.stream(**_request(system, messages, max_tokens, effort=effort)) as stream:
             for event in stream:
-                if event.type == "content_block_start" and event.content_block.type == "fallback":
-                    shown = ""
-                elif event.type == "text":
+                if event.type == "text":  # 回退时备用模型接着写，已显示的内容保留
                     shown += event.text
                     placeholder.markdown(shown + " ▌")
             message = stream.get_final_message()
@@ -130,6 +134,9 @@ def stream_markdown(placeholder, system: str, messages: list[dict], max_tokens: 
         placeholder.empty()
         raise AIError("AI 没有完成这次请求（被安全策略拦截）。请换个说法再试。")
     text = _final_text(message)
+    if message.stop_reason is None or not text.strip():
+        placeholder.empty()
+        raise AIError("AI 没有给出完整的回复，请重试。")
     if message.stop_reason == "max_tokens":
         text += "\n\n_（回复过长，已截断）_"
     placeholder.markdown(text)

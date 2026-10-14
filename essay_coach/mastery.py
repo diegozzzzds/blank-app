@@ -2,8 +2,8 @@
 
 - 能力估计：每个技能点一个 Elo 能力值 θ，每道题一个难度 b（Pelánek 2016 的自适应练习做法），
   P(答对) = g + (1 - g)·σ(θ - b)，选择题的 g = 1/选项数（猜对概率）。
-- 只用“独立完成”的表现计算掌握度：用了提示的作答按比例打折，看了答案按 0 计（Bastani et al. 2025：
-  有帮助时的正确率会制造“学会了”的错觉）。
+- 只用“独立完成”的表现计算掌握度：看了提示、答错后才改对、看了答案，都按“没有独立做对”计入能力值和
+  正确率（Bastani et al. 2025：有帮助时的正确率会制造“学会了”的错觉）；这些作答单独统计为“有帮助”。
 - 三级掌握（参考 Bloom 掌握学习 + 连续正确标准）：
     已学会 learned：独立正确率的指数平均 ≥ 0.85，且连续独立答对 ≥ 4 道不同的题
     已巩固 retained：学会后，在间隔 ≥ 1 天的两次复习里首题都独立答对
@@ -18,6 +18,7 @@ from datetime import datetime, timedelta, timezone
 from fsrs import Card, Rating, Scheduler
 
 from .skills import KCS
+from .store import study_day
 
 TIERS = {
     "new": ("未开始", "gray"),
@@ -29,6 +30,7 @@ TIERS = {
 TIER_RANK = {k: i for i, k in enumerate(TIERS)}
 
 EMA_ALPHA = 0.3
+REVIEW_GAP = timedelta(hours=20)
 LEARNED_EMA = 0.85
 LEARNED_STREAK = 4
 RETAINED_REVIEWS = 2
@@ -78,9 +80,10 @@ def mastery_pct(progress: dict, kc: str) -> int:
 
 
 def outcome_value(score: float, hints: int, revealed: bool) -> float:
-    if revealed:
+    """用于能力估计的结果：只有独立完成才计分（开放题按得分），有帮助或看答案都记 0。"""
+    if revealed or hints:
         return 0.0
-    return max(0.0, score * (1 - 0.25 * hints))
+    return max(0.0, min(score, 1.0))
 
 
 def _rating(score: float, hints: int, revealed: bool, confident: bool | None, fast: bool) -> Rating:
@@ -114,17 +117,32 @@ def review_card(progress: dict, card: dict | None, rating: Rating, when: datetim
     return c.to_dict()
 
 
-def card_due(card: dict | None, when: datetime) -> bool:
+def effective_due(card: dict, progress: dict | None = None) -> datetime:
+    """复习到期时间。设了考试日期时，排在考试之后的复习提前到考前一天（旧卡片也一样）。"""
+    due = _parse(card["due"])
+    exam = ((progress or {}).get("profile") or {}).get("exam_date")
+    if exam:
+        try:
+            cap = datetime.fromisoformat(exam).replace(tzinfo=timezone.utc) - timedelta(days=1)
+        except ValueError:
+            return due
+        last = _parse(card["last_review"]) if card.get("last_review") else None
+        if due > cap and (last is None or last < cap):
+            return cap
+    return due
+
+
+def card_due(card: dict | None, when: datetime, progress: dict | None = None) -> bool:
     if not card:
         return False
-    return datetime.fromisoformat(card["due"]) <= when
+    return effective_due(card, progress) <= when
 
 
 def record(progress: dict, item, score: float, hints: int, revealed: bool,
            confident: bool | None = None, seconds: float | None = None, when: datetime | None = None) -> dict:
     """记录一次作答，更新能力值、题目难度、掌握等级和复习卡片。返回该技能点的新状态。"""
     when = when or datetime.now(timezone.utc)
-    day = when.date().isoformat()
+    day = study_day(when).isoformat()
     st = kc_state(progress, item.kc)
     o = outcome_value(score, hints, revealed)
     solo = hints == 0 and not revealed
@@ -147,7 +165,8 @@ def record(progress: dict, item, score: float, hints: int, revealed: bool,
         st["help_n"] += 1
         st["help_ok"] += int(correct and not revealed)
 
-    st["ema"] = (1 - EMA_ALPHA) * st["ema"] + EMA_ALPHA * o
+    # 掌握判断用“独立做对”的二值结果（AI 判 0.8 以上算对），否则 0.80–0.84 的答案永远达不到 0.85
+    st["ema"] = (1 - EMA_ALPHA) * st["ema"] + EMA_ALPHA * (1.0 if solo and correct else 0.0)
     if solo and correct:
         if item.id not in st["streak_items"]:
             st["streak_items"].append(item.id)
@@ -161,9 +180,13 @@ def record(progress: dict, item, score: float, hints: int, revealed: bool,
     if first_today:
         fast = seconds is not None and seconds < 45
         st["card"] = review_card(progress, st["card"], _rating(score, hints, revealed, confident, fast), when)
-        if st["learned_at"] and day > st["learned_at"][:10] and solo and correct:
-            if not st["reviews_ok"] or day > st["reviews_ok"][-1]:
-                st["reviews_ok"].append(day)
+        # “隔天复习”：与学会时间、上一次成功复习都至少间隔 REVIEW_GAP，避免跨午夜几分钟就算两天
+        if st["learned_at"] and solo and correct:
+            last = st["reviews_ok"][-1] if st["reviews_ok"] else st["learned_at"]
+            if when - _parse(last) >= REVIEW_GAP:
+                st["reviews_ok"].append(when.isoformat())
+        elif st["learned_at"]:
+            st["reviews_ok"] = []  # 复习没做对：“巩固”要重新攒两次
         st["last_day"] = day
 
     _update_tier(st, when)
@@ -215,12 +238,12 @@ def is_unlocked(progress: dict, kc: str) -> bool:
 def due_kcs(progress: dict, when: datetime | None = None) -> list[str]:
     when = when or datetime.now(timezone.utc)
     return [k for k, st in progress["kc"].items()
-            if k in KCS and st.get("tier") != "new" and card_due(st.get("card"), when)]
+            if k in KCS and st.get("tier") != "new" and card_due(st.get("card"), when, progress)]
 
 
 def next_review(progress: dict, kc: str) -> datetime | None:
     card = (progress["kc"].get(kc) or {}).get("card")
-    return datetime.fromisoformat(card["due"]) if card else None
+    return effective_due(card, progress) if card else None
 
 
 def solo_vs_help(progress: dict) -> tuple[tuple[int, int], tuple[int, int]]:
@@ -234,6 +257,10 @@ def retention_now(progress: dict, kc: str) -> float | None:
     if not card:
         return None
     return scheduler(progress).get_card_retrievability(Card.from_dict(card), datetime.now(timezone.utc))
+
+
+def _parse(stamp: str) -> datetime:
+    return ensure_aware(datetime.fromisoformat(stamp))
 
 
 def ensure_aware(dt: datetime) -> datetime:

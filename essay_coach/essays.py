@@ -87,7 +87,7 @@ def _criterion_gaps(rubric_key: str, criteria: list[dict]) -> dict[str, float]:
     gaps: dict[str, list[float]] = {}
     for c in criteria:
         for short, generic in mapping.items():
-            if c["name"].startswith(short):
+            if short in c["name"]:  # 评分标准名称带前缀（如 “Row A · Thesis 论点”），用包含关系匹配
                 for g in generic:
                     gaps.setdefault(g, []).append(1 - c["score"] / c["max_score"] if c["max_score"] else 0.5)
     return {g: round(sum(v) / len(v), 2) for g, v in gaps.items()}

@@ -23,7 +23,7 @@ def feedback():
              "why": "TR 要求清楚立场", "how_to_fix": "说明同意哪一部分", "check_question": "读者能说出你的立场吗？"},
             {"criterion": "Task Response", "kc": "analysis", "quote": "elephants walk a lot in the wild", "problem": "缺分析",
              "why": "论据需要解释", "how_to_fix": "用 because 解释", "check_question": "解释了为什么吗？"},
-            {"criterion": "CC", "kc": "made_up_kc", "quote": "x", "problem": "p", "why": "w", "how_to_fix": "h", "check_question": "q"},
+            {"criterion": "CC", "kc": "transitions", "quote": "Secondly, zoos can protect endangered species.", "problem": "p", "why": "w", "how_to_fix": "h", "check_question": "q"},
         ],
         "error_patterns": [
             {"kc": "chinglish_struct", "pattern": "双谓语", "rule": "一个分句只有一个谓语",
@@ -31,8 +31,7 @@ def feedback():
             {"kc": "sent_boundary", "pattern": "逗号连句", "rule": "两个完整句不能只用逗号连",
              "instances": [{"quote": "zoos have advantages and disadvantages, we should improve them", "hint": "看逗号"}]},
         ],
-        "kc_evidence": [{"kc": "thesis", "status": "weak", "note": "n"}, {"kc": "transitions", "status": "demonstrated", "note": "n"},
-                        {"kc": "nope", "status": "missing", "note": "n"}],
+        "kc_evidence": [{"kc": "thesis", "status": "weak", "note": "n"}, {"kc": "transitions", "status": "demonstrated", "note": "n"}],
     }
 
 SAMPLES = {
@@ -48,7 +47,7 @@ SAMPLES = {
          "hints": ["h1", "h2", "h3"], "explanation": "AI rule 2"}]},
     "ItemCheckBatch": lambda req: {"results": [{"index": 1, "ok": True, "problem": ""}, {"index": 2, "ok": False, "problem": "答案不唯一"}]},
     "StudyPlan": lambda req: {"overview": "AI 计划概述", "daily_routine": "每天 20 分钟", "milestones": ["m1", "m2"],
-                              "weeks": [{"title": "句子基础", "kcs": ["sent_boundary", "articles", "fake_kc"], "goals": ["学会分清完整句"],
+                              "weeks": [{"title": "句子基础", "kcs": ["sent_boundary", "articles", "critical_questions"], "goals": ["学会分清完整句"],
                                          "why": "诊断显示", "lesson_focus": "句子边界", "essay_task": "Agree/disagree", "checkpoint": False},
                                         {"title": "论点", "kcs": ["prompt_analysis", "thesis"], "goals": ["学会写 thesis"],
                                          "why": "w", "lesson_focus": "thesis", "essay_task": "t", "checkpoint": False}]},
@@ -66,9 +65,11 @@ class _Stream:
         fmt = kwargs["output_config"].get("format")
         if fmt:
             text = json.dumps(SAMPLES[fmt["schema"]["title"]](kwargs), ensure_ascii=False)
-            self.content = [NS(type="text", text='{"partial'), NS(type="fallback"), NS(type="text", text=text)]
+            # 模拟输出中途的服务端回退：备用模型接着前半段继续输出
+            cut = len(text) // 3
+            self.content = [NS(type="text", text=text[:cut]), NS(type="fallback"), NS(type="text", text=text[cut:])]
         else:
-            self.content = [NS(type="text", text="想一想：你的立场是什么？")]
+            self.content = [NS(type="text", text="想一想："), NS(type="fallback"), NS(type="text", text="你的立场是什么？")]
     def __enter__(self): return self
     def __exit__(self, *a): return False
     def __iter__(self):

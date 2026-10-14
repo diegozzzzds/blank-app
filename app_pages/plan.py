@@ -30,8 +30,9 @@ with st.expander("① 我的目标", expanded=profile is None, icon=":material/f
         level = c3.selectbox("我现在的水平", LEVELS, index=LEVELS.index(p.get("level", "高中")))
         minutes = c4.slider("每天能练多少分钟", 10, 90, p.get("minutes_per_day", 25), step=5)
         has_date = st.checkbox("已经确定考试日期", value=bool(p.get("exam_date")))
-        exam_date = st.date_input("考试日期", value=date.fromisoformat(p["exam_date"]) if p.get("exam_date")
-                                  else date.today() + timedelta(weeks=10), min_value=date.today())
+        saved = date.fromisoformat(p["exam_date"]) if p.get("exam_date") else date.today() + timedelta(weeks=10)
+        exam_date = st.date_input("考试日期", value=max(saved, date.today()), min_value=date.today(),
+                                  help="考试日期已过的话，请改成下一次考试的日期")
         notes = st.text_area("你觉得自己写作最大的困难是什么？（选填）", value=p.get("notes", ""), height=80)
         if st.form_submit_button("保存目标", type="primary"):
             progress["profile"] = {"exam": exam, "target": target.strip(), "level": level, "minutes_per_day": minutes,
@@ -89,7 +90,9 @@ else:
                         ans = st.radio("选项", range(len(item.options)), index=None, key=f"diag_{item.id}",
                                        format_func=lambda i: item.options[i], label_visibility="collapsed")
                     c1, c2 = st.columns([1, 4])
-                    if c1.button("下一题", type="primary", disabled=ans is None or ans == []):
+                    incomplete = item.format == "order" and len(ans or []) != len(item.sentences)
+                    if c1.button("下一题", type="primary", disabled=ans is None or ans == [] or incomplete,
+                                 help="请把所有句子都排进去" if incomplete else None):
                         score, _ = drills.grade_auto(item, ans)
                         dq["answers"][item.id] = score
                         dq["i"] += 1
@@ -123,12 +126,14 @@ else:
         if diag_essay and diag_essay.get("feedback"):
             st.success(f"诊断作文已批改：{diag_essay['feedback']['level_label']}", icon=":material/check:")
         elif diag_essay:
-            st.page_link("app_pages/write.py", label="继续写诊断作文", icon=":material/draw:")
+            if st.button("继续写诊断作文", icon=":material/draw:"):
+                ss["essay_id"] = diag_essay["id"]
+                st.switch_page("app_pages/write.py")
         elif ui.require_ai("写诊断作文需要 AI。没有 AI 也可以直接用快速诊断的结果生成计划。"):
             if st.button("开始写诊断作文", icon=":material/draw:"):
                 prompt = ui.run_ai("正在出题…", essays.new_prompt, progress, "diagnostic")
                 if prompt:
-                    essays.start_essay(progress, "diagnostic", prompt)
+                    ss["essay_id"] = essays.start_essay(progress, "diagnostic", prompt)["id"]
                     st.switch_page("app_pages/write.py")
 
     # ---------------- 3. 生成计划 ----------------
@@ -163,7 +168,9 @@ else:
                 st.markdown("\n".join(f"- {n}" for n in notes))
 
     # ---------------- 4. 计划 ----------------
-    if plan:
+    if plan and not plan["weeks"]:
+        st.warning("学习大纲是空的，请在上面重新生成。", icon=":material/warning:")
+    elif plan:
         st.subheader("📅 我的学习大纲")
         src = "AI 生成 · 程序已校验" if plan.get("source") == "ai" else "程序生成的基础计划"
         st.caption(f"{src} · 创建于 {plan.get('created', '')}")
@@ -176,7 +183,7 @@ else:
         week_names = [f"第 {i + 1} 周" + (" ◉" if i == cur_i else "") for i in range(len(plan["weeks"]))]
         shown = st.segmented_control("周次", range(len(plan["weeks"])), default=cur_i,
                                      format_func=lambda i: week_names[i], key="plan_week_view")
-        shown = cur_i if shown is None else shown
+        shown = shown if shown in range(len(plan["weeks"])) else cur_i  # 重新规划后周数可能变少
         week = plan["weeks"][shown]
         with st.container(border=True):
             start = planner.week_start(progress, shown)
@@ -198,7 +205,8 @@ else:
             with st.expander("调整这一周的技能", icon=":material/tune:"):
                 st.caption("计划可以自己调整：觉得某个技能已经会了、或想先练别的，就在这里改（最多 4 个）。")
                 chosen = st.multiselect("本周技能", list(KCS), default=week["kcs"], max_selections=planner.MAX_KCS_PER_WEEK,
-                                        format_func=lambda k: f"{KCS[k].name}（{KCS[k].en}）", key=f"adjust_{shown}")
+                                        format_func=lambda k: f"{KCS[k].name}（{KCS[k].en}）",
+                                        key=f"adjust_{plan.get('id', plan.get('created'))}_{shown}")
                 if st.button("保存调整", key=f"adjust_save_{shown}", disabled=not chosen or chosen == week["kcs"]):
                     week["kcs"] = chosen
                     week["adjusted"] = True
@@ -213,6 +221,7 @@ else:
                 if c1.button("完成本周，进入下一周", icon=":material/skip_next:",
                              help="建议本周技能完成度达到 80% 以上再进入下一周"):
                     plan["current_week"] = cur_i + 1
+                    ss.pop("plan_week_view", None)  # 让周次切换到新的当前周
                     store.save()
                     st.rerun()
             if shown == cur_i:

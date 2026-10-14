@@ -5,13 +5,17 @@
 - 页面里修改记录后调用 save()，下一次运行（或本次运行结束时的 flush()）把数据写回浏览器，
   写入组件一直挂载到浏览器确认为止，避免丢更新。
 自动化测试中没有浏览器：预先在 st.session_state["progress"] 放好记录即可。
+
+已知限制：同一浏览器同时开多个标签页时，以最后保存的那个为准。
 """
 
 import copy
 import json
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 
 import streamlit as st
+
+from .skills import KCS
 
 LS_KEY = "essaycoach.progress.v2"
 SCHEMA_VERSION = 2
@@ -37,12 +41,23 @@ MAX_ATTEMPTS = 3000
 MAX_AI_ITEMS = 500
 
 
+# 学习日按北京时间划分（中国没有夏令时，固定 UTC+8），所有“今天/每天第一题/连续天数”都用它
+STUDY_TZ = timezone(timedelta(hours=8))
+
+
 def now() -> datetime:
     return datetime.now(timezone.utc)
 
 
+def study_day(when: datetime | None = None) -> date:
+    when = when or now()
+    if when.tzinfo is None:
+        when = when.replace(tzinfo=timezone.utc)
+    return when.astimezone(STUDY_TZ).date()
+
+
 def today() -> str:
-    return date.today().isoformat()
+    return study_day().isoformat()
 
 
 def new_progress() -> dict:
@@ -50,11 +65,37 @@ def new_progress() -> dict:
 
 
 def _migrate(data: dict) -> dict:
+    """把读到/导入的记录整理成当前格式：类型不对的字段换成默认值，去掉技能图谱里已经不存在的技能点。"""
     fresh = new_progress()
-    if isinstance(data, dict):
-        fresh.update({k: v for k, v in data.items() if k in DEFAULT})
+    if not isinstance(data, dict):
+        return fresh
+    for key, default in DEFAULT.items():
+        if key == "version":
+            continue
+        value = data.get(key, default)
+        ok = (value is None or isinstance(value, dict)) if default is None else isinstance(value, type(default))
+        fresh[key] = copy.deepcopy(value if ok else default)
+    fresh["kc"] = {k: v for k, v in fresh["kc"].items() if k in KCS and isinstance(v, dict)}
+    fresh["focus_kcs"] = [k for k in fresh["focus_kcs"] if k in KCS]
+    fresh["mistakes"] = [m for m in fresh["mistakes"]
+                         if isinstance(m, dict) and m.get("kc") in KCS and isinstance(m.get("card"), dict)]
+    fresh["attempts"] = [a for a in fresh["attempts"] if isinstance(a, dict) and "item" in a]
+    fresh["essays"] = [e for e in fresh["essays"] if isinstance(e, dict) and {"id", "status", "text"} <= set(e)]
+    fresh["ai_items"] = [x for x in fresh["ai_items"] if isinstance(x, dict) and x.get("kc") in KCS]
+    fresh["chat"] = [m for m in fresh["chat"] if isinstance(m, dict) and m.get("role") in ("user", "assistant")]
+    plan = fresh["plan"]
+    if plan is not None:
+        if not isinstance(plan.get("weeks"), list):
+            fresh["plan"] = None
+        else:
+            plan["weeks"] = [dict(w, kcs=[k for k in w.get("kcs", []) if k in KCS])
+                             for w in plan["weeks"] if isinstance(w, dict)]
     fresh["version"] = SCHEMA_VERSION
     return fresh
+
+
+def _has_data(p: dict) -> bool:
+    return bool(p.get("attempts") or p.get("essays") or p.get("profile"))
 
 
 def _js_eval(expr: str, key: str):
@@ -67,9 +108,10 @@ def sync() -> dict | None:
     """在入口每次运行时调用。返回学习记录；浏览器还没回传时返回 None。"""
     ss = st.session_state
     with st.sidebar:  # 组件 iframe 很小，放在侧边栏不影响主区域布局
-        if "progress" not in ss or ss.get("_ls_unavailable"):
+        if ("progress" not in ss or ss.get("_ls_unavailable")) and not ss.get("_ls_blocked"):
             ss["_ls_tries"] = ss.get("_ls_tries", 0) + 1
-            raw = _js_eval(f"JSON.stringify({{v: localStorage.getItem({json.dumps(LS_KEY)})}})", "ls_load")
+            raw = _js_eval("(() => { try { return JSON.stringify({v: localStorage.getItem(" + json.dumps(LS_KEY)
+                           + ")}); } catch (e) { return JSON.stringify({err: String(e)}); } })()", "ls_load")
             if raw is None:
                 if "progress" in ss:
                     return ss["progress"]  # 仍在等待浏览器：继续用本次会话的记录，暂不写入
@@ -82,11 +124,22 @@ def sync() -> dict | None:
                 return ss["progress"]
             late = ss.pop("_ls_unavailable", False)
             try:
-                stored = json.loads(raw).get("v")
+                reply = json.loads(raw)
+            except (ValueError, TypeError):
+                reply = {}
+            if reply.get("err"):  # 浏览器禁止访问存储：本次照常使用，但不保存到浏览器
+                ss["_ls_blocked"] = True
+                ss.setdefault("progress", new_progress())
+                return ss["progress"]
+            try:
+                stored = reply.get("v")
                 loaded = _migrate(json.loads(stored)) if stored else None
             except (ValueError, TypeError):
                 loaded = None
             if loaded is not None:
+                if late and _has_data(ss.get("progress") or {}):
+                    # 浏览器的记录来晚了：以浏览器里的为准，本次会话做的练习留一份备份供下载
+                    ss["_ls_session_backup"] = json.dumps(ss["progress"], ensure_ascii=False, indent=1)
                 ss["progress"] = loaded
                 if late:
                     st.toast("已读取这个浏览器里保存的学习记录。")
@@ -101,13 +154,34 @@ def flush() -> None:
     """把未确认的修改写回浏览器。入口在运行开始（sync）和结束时各调用一次，同一版本每次运行只挂载一次。"""
     ss = st.session_state
     pending = ss.get("_ls_pending")
-    if not pending or pending[0] == ss.get("_ls_mounted_ver") or ss.get("_ls_unavailable"):
+    if (not pending or pending[0] == ss.get("_ls_mounted_ver") or ss.get("_ls_unavailable")
+            or ss.get("_ls_blocked")):
         return
     ver, payload = pending
     ss["_ls_mounted_ver"] = ver
-    ok = _js_eval(f"localStorage.setItem({json.dumps(LS_KEY)}, {json.dumps(payload)}); 1", f"ls_save_{ver}")
-    if ok == 1 and ss.get("_ls_pending", (None,))[0] == ver:
+    ok = _js_eval("(() => { try { localStorage.setItem(" + json.dumps(LS_KEY) + ", " + json.dumps(payload)
+                  + "); return 1; } catch (e) { return -1; } })()", f"ls_save_{ver}")
+    if ok in (1, -1) and ss.get("_ls_pending", (None,))[0] == ver:
         del ss["_ls_pending"]
+        ss["_ls_write_error"] = ok == -1  # -1：通常是浏览器存储空间满了
+
+
+def status() -> str:
+    """存储状态：ok / waiting（还在等浏览器）/ blocked（浏览器禁止存储）/ full（写入失败）。"""
+    ss = st.session_state
+    if ss.get("_ls_blocked"):
+        return "blocked"
+    if ss.get("_ls_write_error"):
+        return "full"
+    if ss.get("_ls_unavailable"):
+        return "waiting"
+    return "ok"
+
+
+def start_without_storage() -> None:
+    """浏览器一直没有回应时，让学生先开始用（本次不读写浏览器存储，之后读到再接上）。"""
+    st.session_state["progress"] = new_progress()
+    st.session_state["_ls_unavailable"] = True
 
 
 def progress() -> dict:
@@ -142,14 +216,28 @@ def export_json() -> str:
     return json.dumps(progress(), ensure_ascii=False, indent=1)
 
 
+WIDGET_PREFIXES = ("essay_text_", "revised_", "resp_", "ans_", "conf_", "explain_", "adjust_", "goal_", "diag_")
+SESSION_KEYS = ("drill", "essay_id", "diag_quiz", "plan_week_view", "plan_notes")
+
+
+def _reset_widgets() -> None:
+    ss = st.session_state
+    for key in [k for k in ss if isinstance(k, str) and k.startswith(WIDGET_PREFIXES)]:
+        del ss[key]
+    for key in SESSION_KEYS:
+        ss.pop(key, None)
+
+
 def import_json(raw: bytes) -> None:
     data = json.loads(raw.decode("utf-8"))
-    if not isinstance(data, dict) or "kc" not in data or "attempts" not in data:
+    if not isinstance(data, dict) or not isinstance(data.get("kc"), dict) or not isinstance(data.get("attempts"), list):
         raise ValueError("这不是 EssayCoach 的学习记录文件。")
     st.session_state["progress"] = _migrate(data)
+    _reset_widgets()  # 旧的输入框内容不能覆盖刚导入的记录
     save()
 
 
 def reset() -> None:
     st.session_state["progress"] = new_progress()
+    _reset_widgets()
     save()

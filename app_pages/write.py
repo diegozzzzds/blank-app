@@ -17,6 +17,7 @@ KIND_HELP = {
     "checkpoint": "独立检测：限时、不用任何帮助，分数进入“真实进步”曲线。",
     "diagnostic": "诊断：找出你最需要练的技能，用来生成学习大纲。",
 }
+REVISION_LABELS = {"fixed": "✅ 改好了", "partly": "🟡 改了一部分", "not_fixed": "❌ 还没改好"}
 TIME_LIMIT_MIN = {"ielts": 40, "general": 40, "ap_argument": 40, "personal": 60}
 # 细化的论证目标（Ferretti et al. 2000；Nussbaum & Kardash 2005：具体目标比“说服读者”更能带出反方论证）
 ARGUMENT_GOALS = ["一句话明确回答题目的立场（thesis）", "2–3 个理由，每个都有具体论据", "解释论据为什么能支撑理由",
@@ -197,12 +198,12 @@ else:
         if fb["error_patterns"]:
             st.markdown("### 语言错误模式")
             st.caption("这些句子已经加入错题本，会以“改你自己的句子”的形式在之后几天出现。")
-            for pat in fb["error_patterns"]:
+            for pi, pat in enumerate(fb["error_patterns"]):
                 with st.container(border=True):
                     st.markdown(f"**{pat['pattern']}** · {KCS[pat['kc']].name}  \n{pat['rule']}")
                     for inst in pat["instances"]:
                         st.markdown(f"- “{ui.md_escape(inst['quote'])}” — {inst['hint']}")
-                    if st.button("练这个技能", key=f"pat_{essay['id']}_{pat['kc']}_{pat['pattern']}"):
+                    if st.button("练这个技能", key=f"pat_{essay['id']}_{pi}"):
                         ss["drill_request"] = {"mode": "kc", "kc": pat["kc"]}
                         st.switch_page("app_pages/drill.py")
 
@@ -225,8 +226,21 @@ else:
     # ---------------- 修改 ----------------
     if essay["status"] == "revising":
         st.subheader("✏️ 修改")
-        if essay.get("revision") and essay["revision"]["surface_only"]:
-            st.warning("上次修改主要是换词或改语法，还没有处理重点问题。对照上面的“怎么改”再试一次。", icon=":material/warning:")
+        if essay.get("revision"):
+            rc = essay["revision"]
+            if rc["surface_only"]:
+                st.warning("上次修改主要是换词或改语法，还没有处理重点问题。对照上面的“怎么改”再试一次。",
+                           icon=":material/warning:")
+            with st.container(border=True):
+                st.markdown(f"**上次检查结果：** {rc['overall']}")
+                for chk in rc["checks"]:
+                    idx = chk["index"] - 1
+                    title = fb["priority_issues"][idx]["problem"] if 0 <= idx < len(fb["priority_issues"]) else f"问题 {chk['index']}"
+                    st.markdown(f"- {REVISION_LABELS[chk['status']]} **{title}** — {chk['comment']}")
+            if st.button("先到这里，结束这篇", help="可以先去练相关技能，之后在新作文里用上"):
+                essay["status"] = "done"
+                store.save()
+                st.rerun()
         key = f"revised_{essay['id']}"
         if key not in ss:
             ss[key] = essay["revised"] or essay["text"]
@@ -246,11 +260,10 @@ else:
         rc = essay["revision"]
         st.subheader("🔍 修改效果")
         st.markdown(rc["overall"])
-        labels = {"fixed": "✅ 改好了", "partly": "🟡 改了一部分", "not_fixed": "❌ 还没改好"}
         for chk in rc["checks"]:
             idx = chk["index"] - 1
             title = fb["priority_issues"][idx]["problem"] if 0 <= idx < len(fb["priority_issues"]) else f"问题 {chk['index']}"
-            st.markdown(f"- {labels[chk['status']]} **{title}** — {chk['comment']}")
+            st.markdown(f"- {REVISION_LABELS[chk['status']]} **{title}** — {chk['comment']}")
         if rc["new_problems"]:
             st.markdown("**新出现的问题：** " + "；".join(rc["new_problems"]))
         st.caption(f"修改稿估计：{format_score(essay['rubric'], rc['overall_score'])} / {rubric['max']}"

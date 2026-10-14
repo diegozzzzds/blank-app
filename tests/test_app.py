@@ -68,8 +68,8 @@ def test_plan_generation_is_validated(at):
     setup_profile_and_plan(at)
     plan = at.session_state["progress"]["plan"]
     assert plan["source"] == "ai"
-    assert all(k != "fake_kc" for w in plan["weeks"] for k in w["kcs"])
-    assert any("fake_kc" in n for n in at.session_state["plan_notes"])
+    assert "critical_questions" not in plan["weeks"][0]["kcs"]  # 前置技能没学，不能放第一周
+    assert any("批判性提问" in n for n in at.session_state["plan_notes"])
 
 
 def test_drill_loop_hints_reveal_and_mastery(at):
@@ -128,7 +128,7 @@ def test_essay_feedback_revision_and_mistakes(at):
     p = at.session_state["progress"]
     essay = next(e for e in p["essays"] if e["id"] == eid)
     fb = essay["feedback"]
-    assert len(fb["priority_issues"]) == 2  # 不在技能图谱里的问题被过滤
+    assert len(fb["priority_issues"]) == 3
     assert all(m["item"]["source"] == "personal" for m in p["mistakes"] if m["source"] == "essay")
     assert p["focus_kcs"][:2] == ["thesis", "analysis"]
     assert btn(at, "开始修改").disabled  # 先写修改计划

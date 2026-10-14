@@ -1,6 +1,6 @@
 import streamlit as st
 
-from essay_coach import drills, mastery, planner, store, ui
+from essay_coach import ai, drills, mastery, planner, store, ui
 from essay_coach.skills import KCS
 
 progress = store.progress()
@@ -21,16 +21,16 @@ if not progress.get("profile"):
 else:
     day = progress["days"].get(store.today(), {"items": 0, "solo_correct": 0})
     goal = drills.daily_goal(progress)
-    due_m = len(drills.due_mistakes(progress))
+    due_m = len(drills.due_mistakes(progress, ai_ready=ai.is_ready()))
     due_k = len(mastery.due_kcs(progress))
     streak, met = drills.streak(progress)
     week = planner.current_week(progress)
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("今日已做", f"{day['items']} / {goal}", help="每天独立完成至少 10 题算一天", border=True)
+    c1.metric("今日已做", f"{day['items']} / {goal}", help="每天完成至少 10 题（不含看答案的题）算一天", border=True)
     c2.metric("今日独立做对", day["solo_correct"], border=True)
     c3.metric("待复习", due_m + due_k, help=f"错题 {due_m} 道 · 到期技能 {due_k} 个", border=True)
-    c4.metric("连续学习", f"{streak} 天", help="每 7 天允许 1 天“补签”，偶尔断一天不会清零", border=True)
+    c4.metric("连续学习", f"{streak} 天", help="每天完成至少 10 题（不含看答案的题）算一天；每连续 7 天可以补签 1 天，偶尔断一天不会清零", border=True)
 
     with st.container(border=True):
         left, right = st.columns([3, 1], vertical_alignment="center")
