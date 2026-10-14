@@ -1,1 +1,4 @@
-streamlit
+streamlit>=1.50
+anthropic>=1.13
+pydantic>=2.7
+altair>=5

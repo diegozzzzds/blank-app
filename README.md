@@ -1,19 +1,54 @@
-# 🎈 Blank app template
+# ✍️ EssayCoach · AI 英文写作教练
 
-A simple Streamlit app template for you to modify!
+一个用 AI 教人写英文 essay 的 Streamlit 应用：**先学方法 → 列大纲 → 写初稿 → AI 批改 → 自己修改 → 再提交对比**，一步步把文章改好。
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://blank-app-template.streamlit.app/)
+AI 部分使用 Anthropic Claude（`claude-opus-5-5`）。默认采用“引导式”教学：AI 给提示、追问和修改任务，而不是直接替学生写。
 
-### How to run it on your own machine
+## 功能
 
-1. Install the requirements
+| 页面 | 做什么 |
+|---|---|
+| 🏠 首页 · 学习路径 | 学习进度、最新得分、推荐学习步骤 |
+| 📚 写作课堂 | 9 节微课：读题、Thesis、结构与大纲、PEEL 主体段、开头结尾、反方与反驳、衔接连贯、学术语言与中式英语、修改策略。每课包含讲解、范例对比、小测验（不需要 AI）、AI 点评的练习和课堂提问 |
+| 🧭 大纲教练 | 输入题目 → AI 拆题与头脑风暴（只给角度和问题）→ 学生自己填写大纲 → AI 逐部分审阅 → 对照示范大纲 |
+| ✍️ 写作与 AI 批改 | 选择评分标准（通用百分制 / 雅思 Task 2 / AP Lang Argument / 申请文书），获得分项得分、原文高亮批注、逐段反馈（反向大纲）和按优先级排序的修改任务；可下载 Markdown 报告 |
+| 🔁 修改工坊 | 修改任务清单 + 编辑区；“段落精修”可选择只要提示或看示范改写；提交新稿后 AI 逐条检查修改任务完成情况，显示分数变化曲线和逐词改动对比 |
+| 💬 写作导师 | 苏格拉底式对话，可以让导师看到当前题目、大纲和最新稿件 |
 
-   ```
-   $ pip install -r requirements.txt
-   ```
+侧边栏可以设置学生水平、反馈语言（中文 / 双语 / English）、教学方式（引导式 / 示范式）和 AI 思考深度，并可导出 / 导入学习记录（JSON）。
 
-2. Run the app
+## 运行
 
-   ```
-   $ streamlit run streamlit_app.py
-   ```
+```bash
+pip install -r requirements.txt
+streamlit run streamlit_app.py
+```
+
+### 配置 API Key（三选一）
+
+1. 复制 `.streamlit/secrets.toml.example` 为 `.streamlit/secrets.toml`，填入 `ANTHROPIC_API_KEY`（已在 `.gitignore` 中）
+2. 设置环境变量 `ANTHROPIC_API_KEY`
+3. 运行后在侧边栏直接填写
+
+没有 API Key 时，课程讲解、范例和小测验仍然可以使用。
+
+## 代码结构
+
+```
+streamlit_app.py          入口：页面导航、侧边栏设置、学习记录导入导出
+app_pages/                各页面
+essay_coach/
+  ai.py                   Claude API 封装（结构化输出、流式输出、中文错误提示）
+  prompts.py              各功能的系统提示词和消息构造
+  schemas.py              结构化输出的 pydantic 模型（批改结果、大纲审阅等）
+  rubrics.py              评分标准与总分计算（分项分数在代码中校正并汇总）
+  lessons.py              课程内容
+  state.py                会话状态、跨页面共享的输入字段
+  ui.py                   批改报告、原文高亮、修改对比等界面组件
+```
+
+### 关于 AI 调用
+
+- 批改、大纲审阅等使用 JSON Schema 结构化输出，保证返回格式可解析；分项分数会按评分标准截断到合法范围，总分由代码计算（雅思按官方规则四舍五入到 0.5）。
+- 请求开启了服务端回退（`fallbacks: "default"`）：如果请求被安全分类器误拦，API 会自动换到推荐的备用模型重试，避免正常的写作请求失败。
+- 学习记录只保存在当前浏览器会话中，关闭页面前请在侧边栏导出。
