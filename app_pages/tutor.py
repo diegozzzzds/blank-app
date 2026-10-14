@@ -1,51 +1,54 @@
 import streamlit as st
 
-from essay_coach import prompts, state, ui
+from essay_coach import planner, prompts, store, ui
+from essay_coach.skills import KCS
 
-proj = state.project()
-fields = proj["fields"]
-chat = proj["chat"]
+progress = store.progress()
+chat = progress["chat"]
+ss = st.session_state
 
 st.title("💬 写作导师")
-st.caption("像和老师面对面一样提问。导师会多问你几个问题，帮你自己想清楚。")
+st.caption("卡住了就来问。导师会用提问一步步引导你想清楚，不会替你写或改你的句子——自己动手改才会真正提高。")
 
 left, right = st.columns([3, 1], vertical_alignment="center")
 with left:
-    share = st.toggle("让导师看到我当前的题目、大纲和最新稿件", value=True)
+    share = st.toggle("让导师看到我本周的计划和最近一篇作文", value=True)
 with right:
-    if st.button("🧹 新对话", width="stretch", disabled=not chat):
+    if st.button("新对话", width="stretch", disabled=not chat, icon=":material/refresh:"):
         chat.clear()
+        store.save()
         st.rerun()
+
+open_checkpoint = any(e["kind"] == "checkpoint" and e["status"] == "writing" for e in progress["essays"])
+if open_checkpoint:
+    st.warning("你有一篇正在写的独立检测作文。为了让分数反映真实水平，写完提交前请不要向导师求助。",
+               icon=":material/timer:")
 
 
 def _context() -> str:
     if not share:
-        return "（学生没有分享当前的文章材料。）"
+        return "（学生没有分享学习材料。）"
     parts = []
-    if fields.get("essay_prompt", "").strip():
-        parts.append(f"<essay_prompt>\n{fields['essay_prompt']}\n</essay_prompt>")
-    if fields.get("outline_thesis", "").strip():
-        parts.append(f"<student_outline>\n{prompts.outline_text(fields)}\n</student_outline>")
-    if draft := state.latest_draft():
-        tasks = "\n".join(f"- {t['title']}" for t in draft["grading"]["revision_tasks"])
-        parts.append(f"<latest_draft version=\"{draft['version']}\">\n{draft['text']}\n</latest_draft>\n"
-                     f"<latest_revision_tasks>\n{tasks}\n</latest_revision_tasks>")
+    week = planner.current_week(progress)
+    if week:
+        parts.append("本周技能：" + "、".join(KCS[k].name for k in week["kcs"] if k in KCS))
+    essay = next((e for e in reversed(progress["essays"]) if e.get("text")), None)
+    if essay:
+        parts.append(f"<latest_essay kind=\"{essay['kind']}\">\n题目：{essay['prompt']}\n\n{essay['text']}\n</latest_essay>")
+        if essay.get("feedback"):
+            issues = "\n".join(f"- {x['problem']}（{x['how_to_fix']}）" for x in essay["feedback"]["priority_issues"])
+            parts.append(f"<latest_feedback>\n{issues}\n</latest_feedback>")
     if not parts:
-        return "（学生还没有写题目、大纲或稿件。）"
-    return "学生当前的写作材料（仅供参考，回答学生的问题时可以引用）：\n" + "\n".join(parts)
+        return "（学生还没有计划或作文。）"
+    return "学生的学习材料（仅供参考）：\n" + "\n".join(parts)
 
 
-STARTERS = [
-    "我不知道这道题该怎么切入",
-    "我的 thesis 够好吗？",
-    "怎么让主体段的分析更深入？",
-    "我总是写 Chinglish，怎么改？",
-    "批改里的第一个修改任务我看不懂",
-]
+STARTERS = ["这道题我不知道怎么切入", "我的 thesis 够好吗？", "怎么让主体段的分析更深入？",
+            "为什么这句是逗号连句？", "反馈里的重点问题我看不懂"]
 
 if not chat:
     with st.chat_message("assistant", avatar="🧑‍🏫"):
-        st.markdown("你好！我是你的写作导师。今天想聊什么？可以直接提问，也可以点下面的话题开始。")
+        st.markdown("你好！今天想聊什么？可以直接提问，也可以点一个话题。")
     starter = st.pills("话题", STARTERS, label_visibility="collapsed", key="starter_pill")
 else:
     starter = None
@@ -61,11 +64,14 @@ if question:
     with st.chat_message("user", avatar="🧑‍🎓"):
         st.markdown(question)
     with st.chat_message("assistant", avatar="🧑‍🏫"):
+        window = chat[-20:]
+        while window and window[0]["role"] != "user":  # 对话必须从学生的消息开始
+            window = window[1:]
         reply = ui.stream_ai(st.empty(), prompts.tutor_system(_context()),
-                             [{"role": m["role"], "content": m["content"]} for m in chat], 8000)
+                             [{"role": m["role"], "content": m["content"]} for m in window], 4000)
     if reply:
         chat.append({"role": "assistant", "content": reply})
+        store.save()
         st.rerun()
-    # 请求失败：撤回这条提问，保留错误提示，方便重试
-    chat.pop()
-    st.session_state.pop("starter_pill", None)
+    chat.pop()  # 请求失败：撤回这条提问，保留错误提示，方便重试
+    ss.pop("starter_pill", None)

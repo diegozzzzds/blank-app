@@ -46,8 +46,9 @@ def _effort() -> str:
     return EFFORT_LEVELS.get(st.session_state.get("effort_label", "标准"), "medium")
 
 
-def _request(system: str, messages: list[dict], max_tokens: int, schema: type[BaseModel] | None = None) -> dict:
-    output_config: dict = {"effort": _effort()}
+def _request(system: str, messages: list[dict], max_tokens: int, schema: type[BaseModel] | None = None,
+             effort: str | None = None) -> dict:
+    output_config: dict = {"effort": effort or _effort()}
     if schema is not None:
         output_config["format"] = {"type": "json_schema", "schema": anthropic.transform_schema(schema)}
     return {
@@ -92,11 +93,11 @@ def _friendly_errors():
         raise AIError("无法连接到 AI 服务，请检查网络后重试。") from e
 
 
-def structured(system: str, user: str, schema: type[T], max_tokens: int = 32000) -> T:
-    """让 Claude 按 schema 输出 JSON，并解析成 pydantic 对象。"""
+def structured(system: str, user: str, schema: type[T], max_tokens: int = 32000, effort: str | None = None) -> T:
+    """让 Claude 按 schema 输出 JSON，并解析成 pydantic 对象。effort 为空时使用侧边栏设置。"""
     with _friendly_errors():
         with _client(api_key()).beta.messages.stream(
-            **_request(system, [{"role": "user", "content": user}], max_tokens, schema)
+            **_request(system, [{"role": "user", "content": user}], max_tokens, schema, effort)
         ) as stream:
             message = stream.get_final_message()
 
@@ -110,12 +111,13 @@ def structured(system: str, user: str, schema: type[T], max_tokens: int = 32000)
         raise AIError("AI 返回的格式有误，请再试一次。") from e
 
 
-def stream_markdown(placeholder, system: str, messages: list[dict], max_tokens: int = 16000) -> str:
+def stream_markdown(placeholder, system: str, messages: list[dict], max_tokens: int = 16000,
+                    effort: str | None = None) -> str:
     """流式输出 Markdown 文本到 placeholder，返回最终文本。"""
     placeholder.markdown("_老师正在思考…_")
     shown = ""
     with _friendly_errors():
-        with _client(api_key()).beta.messages.stream(**_request(system, messages, max_tokens)) as stream:
+        with _client(api_key()).beta.messages.stream(**_request(system, messages, max_tokens, effort=effort)) as stream:
             for event in stream:
                 if event.type == "content_block_start" and event.content_block.type == "fallback":
                     shown = ""

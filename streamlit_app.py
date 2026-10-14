@@ -1,29 +1,36 @@
 import streamlit as st
 
-from essay_coach import ai, state
-from essay_coach.prompts import FEEDBACK_LANGS, LEVELS, TEACH_MODES
+from essay_coach import ai, store
+from essay_coach.prompts import FEEDBACK_LANGS
 
-st.set_page_config(page_title="EssayCoach · AI 写作教练", page_icon="✍️", layout="wide")
-state.project()
+st.set_page_config(page_title="EssayCoach · 英文写作刷题", page_icon="✍️", layout="wide")
 
 pages = {
-    "开始": [
-        st.Page("app_pages/home.py", title="首页 · 学习路径", icon="🏠", default=True),
+    "今天": [
+        st.Page("app_pages/today.py", title="今日任务", icon=":material/today:", default=True),
     ],
     "学": [
-        st.Page("app_pages/lessons.py", title="写作课堂", icon="📚"),
+        st.Page("app_pages/plan.py", title="学习大纲", icon=":material/map:"),
+        st.Page("app_pages/lessons.py", title="微课与规则卡", icon=":material/menu_book:"),
+        st.Page("app_pages/skillmap.py", title="技能图谱", icon=":material/hub:"),
     ],
     "练": [
-        st.Page("app_pages/outline.py", title="大纲教练", icon="🧭"),
-        st.Page("app_pages/grade.py", title="写作与 AI 批改", icon="✍️"),
-        st.Page("app_pages/revise.py", title="修改工坊", icon="🔁"),
+        st.Page("app_pages/drill.py", title="刷题", icon=":material/edit_note:"),
+        st.Page("app_pages/mistakes.py", title="错题本", icon=":material/assignment_late:"),
+        st.Page("app_pages/write.py", title="写作文", icon=":material/draw:"),
     ],
-    "问": [
-        st.Page("app_pages/tutor.py", title="写作导师", icon="💬"),
+    "看": [
+        st.Page("app_pages/progress.py", title="学习进度", icon=":material/monitoring:"),
+        st.Page("app_pages/tutor.py", title="写作导师", icon=":material/forum:"),
     ],
 }
 nav = st.navigation(pages)
-st.session_state.current_page = nav.url_path or "home"
+
+progress = store.sync()
+if progress is None:
+    st.skeleton(height=160)
+    st.caption("正在读取你的学习记录…")
+    st.stop()
 
 
 def _on_import() -> None:
@@ -31,10 +38,10 @@ def _on_import() -> None:
     if upload is None:
         return
     try:
-        state.import_json(upload.getvalue())
-        st.session_state.import_message = ("success", "已导入学习记录。")
+        store.import_json(upload.getvalue())
+        st.session_state["import_message"] = ("success", "已导入学习记录。")
     except (ValueError, UnicodeDecodeError) as e:
-        st.session_state.import_message = ("error", f"导入失败：{e}")
+        st.session_state["import_message"] = ("error", f"导入失败：{e}")
 
 
 with st.sidebar:
@@ -42,22 +49,35 @@ with st.sidebar:
     if not ai.api_key() or st.session_state.get("api_key_input"):
         st.text_input("Anthropic API Key", type="password", key="api_key_input",
                       help="也可以在 .streamlit/secrets.toml 或环境变量中设置 ANTHROPIC_API_KEY。")
-    st.caption("🟢 AI 已连接" if ai.is_ready() else "⚪ 未配置 API Key：可以学习课程，AI 功能暂不可用")
-
-    st.selectbox("我的水平", LEVELS, index=1, key="level")
+    st.caption("🟢 AI 已连接" if ai.is_ready() else "⚪ 未连接 AI：可以刷种子题库里的自动判分题；AI 判分、出新题、作文批改不可用")
     st.selectbox("反馈语言", list(FEEDBACK_LANGS), key="feedback_lang")
-    st.radio("教学方式", list(TEACH_MODES), key="teach_mode",
-             help="引导式：AI 给提示和追问，不替你写；示范式：AI 会给出段落级示范改写。")
     st.segmented_control("AI 思考深度", list(ai.EFFORT_LEVELS), default="标准", key="effort_label",
-                         help="越深入，批改越细致，但等待时间更长。")
+                         help="越深入，批改越细致，但等待时间更长。刷题判分固定使用快速模式。")
 
     with st.expander("💾 学习记录"):
-        st.download_button("导出学习记录（JSON）", state.export_json(), file_name="essaycoach_progress.json",
+        if st.session_state.get("_ls_unavailable"):
+            st.warning("浏览器存储不可用，记录只保存在本次会话中，请记得导出。")
+        else:
+            st.caption("记录自动保存在这个浏览器里。换设备或清除浏览器数据前请先导出。")
+        st.download_button("导出学习记录（JSON）", store.export_json(), file_name="essaycoach_progress.json",
                            mime="application/json", width="stretch")
         st.file_uploader("导入学习记录", type="json", key="import_file", on_change=_on_import)
         if msg := st.session_state.pop("import_message", None):
             getattr(st, msg[0])(msg[1])
-        st.button("清空所有记录", on_click=state.reset, width="stretch")
-        st.caption("记录只保存在当前浏览器会话中，关闭页面前记得导出。")
+        if st.button("清空所有记录", width="stretch"):
+            st.session_state["confirm_reset"] = True
+        if st.session_state.get("confirm_reset"):
+            st.warning("确定要清空所有学习记录吗？此操作不能撤销。")
+            c1, c2 = st.columns(2)
+            if c1.button("确定清空", type="primary"):
+                store.reset()
+                st.session_state.pop("confirm_reset")
+                st.rerun()
+            if c2.button("取消"):
+                st.session_state.pop("confirm_reset")
+                st.rerun()
 
 nav.run()
+
+with st.sidebar:
+    store.flush()

@@ -1,21 +1,21 @@
-# ✍️ EssayCoach · AI 英文写作教练
+# ✍️ EssayCoach · 英文 essay 刷题与写作教练
 
-一个用 AI 教人写英文 essay 的 Streamlit 应用：**先学方法 → 列大纲 → 写初稿 → AI 批改 → 自己修改 → 再提交对比**，一步步把文章改好。
+一个基于研究设计的英文 essay 学习应用（Streamlit + Claude）。核心思路：**把写作拆成技能点来刷题、按遗忘规律复习、用独立完成的作文检验真实进步**，AI 负责出题、判分、诊断和规划，但不替学生写。
 
-AI 部分使用 Anthropic Claude（`claude-opus-5-5`）。默认采用“引导式”教学：AI 给提示、追问和修改任务，而不是直接替学生写。
+设计依据见 [docs/RESEARCH.md](docs/RESEARCH.md)：调研了 5 个方向的 125 条研究发现，每条都经过独立核实。
 
-## 功能
+## 学习流程
 
-| 页面 | 做什么 |
-|---|---|
-| 🏠 首页 · 学习路径 | 学习进度、最新得分、推荐学习步骤 |
-| 📚 写作课堂 | 9 节微课：读题、Thesis、结构与大纲、PEEL 主体段、开头结尾、反方与反驳、衔接连贯、学术语言与中式英语、修改策略。每课包含讲解、范例对比、小测验（不需要 AI）、AI 点评的练习和课堂提问 |
-| 🧭 大纲教练 | 输入题目 → AI 拆题与头脑风暴（只给角度和问题）→ 学生自己填写大纲 → AI 逐部分审阅 → 对照示范大纲 |
-| ✍️ 写作与 AI 批改 | 选择评分标准（通用百分制 / 雅思 Task 2 / AP Lang Argument / 申请文书），获得分项得分、原文高亮批注、逐段反馈（反向大纲）和按优先级排序的修改任务；可下载 Markdown 报告 |
-| 🔁 修改工坊 | 修改任务清单 + 编辑区；“段落精修”可选择只要提示或看示范改写；提交新稿后 AI 逐条检查修改任务完成情况，显示分数变化曲线和逐词改动对比 |
-| 💬 写作导师 | 苏格拉底式对话，可以让导师看到当前题目、大纲和最新稿件 |
+1. **学习大纲（AI 生成，程序校验）**：设定目标考试、分数和日期 → 12 题快速诊断 + 诊断作文 → AI 在固定的技能图谱（33 个技能点）里挑选、排序，生成每周计划 → 程序检查前置关系、每周数量和遗漏，并列出修正。学生可以手动调整每周技能。
+2. **刷题（一直刷）**：每天“今日任务” = 到期错题 + 到期技能复习 + 上篇作文的弱项 + 本周技能，交错出现。
+   - 题型：选择题、找错改错、句子合并、改写、限定写作、排序、当考官。
+   - 先作答 → 答错后逐级看提示（每级之间要再试一次）→ 答错两次或看完提示才能看答案。
+   - Elo 估计能力和题目难度，选题对准约 75% 的预计正确率；种子题做完后 AI 按需出新题，并由第二次调用核对答案。
+3. **错题本**：做错的题、作文里的语言错误（变成“改你自己的句子”）按 FSRS 间隔复习，不同日子独立做对 3 次才移出。
+4. **写作文**：练习作文 / 限时独立检测作文 / 诊断作文。独立写 → 自评打分 → AI 反馈（最多 3 个重点问题 + 3 类错误模式，原文高亮）→ 每条写下修改计划 → 修改 → AI 检查是否真的改好。
+5. **进度**：掌握度只按独立完成计算（未开始 → 练习中 → 已学会 → 已巩固 → 已迁移）；真实进步看独立作文的趋势，修改稿分数不算。
 
-侧边栏可以设置学生水平、反馈语言（中文 / 双语 / English）、教学方式（引导式 / 示范式）和 AI 思考深度，并可导出 / 导入学习记录（JSON）。
+另外还有：每个技能的规则卡与微课、技能图谱、写作导师（只引导、不代写）。
 
 ## 运行
 
@@ -24,31 +24,51 @@ pip install -r requirements.txt
 streamlit run streamlit_app.py
 ```
 
-### 配置 API Key（三选一）
+API Key（三选一）：`.streamlit/secrets.toml`（参考 `.streamlit/secrets.toml.example`）、环境变量 `ANTHROPIC_API_KEY`，或运行后在侧边栏填写。
+**没有 API Key 也能用**：可以刷种子题库里的自动判分题、看规则卡和微课、用程序生成的基础计划；AI 判分、出新题、作文批改需要 Key。
 
-1. 复制 `.streamlit/secrets.toml.example` 为 `.streamlit/secrets.toml`，填入 `ANTHROPIC_API_KEY`（已在 `.gitignore` 中）
-2. 设置环境变量 `ANTHROPIC_API_KEY`
-3. 运行后在侧边栏直接填写
+学习记录保存在浏览器 localStorage 里（关掉页面再打开不会丢），侧边栏可以导出 / 导入 JSON。
 
-没有 API Key 时，课程讲解、范例和小测验仍然可以使用。
+运行测试（使用假的 Claude 客户端和 `tests/fixtures` 小题库，不联网）：
+
+```bash
+pip install pytest
+python -m pytest tests
+```
+
+## 使用的公开组件
+
+| 用途 | 组件 |
+|---|---|
+| 作文原文高亮 | [st-annotated-text](https://github.com/tvst/st-annotated-text)（Apache-2.0） |
+| 修改前后对比 | [redlines](https://github.com/houfu/redlines)（MIT） |
+| 浏览器存储 | [streamlit_js_eval](https://github.com/aghasemi/streamlit_js_eval)（MIT） |
+| 间隔复习算法 | [py-fsrs](https://github.com/open-spaced-repetition/py-fsrs)（MIT） |
+| 标签、指标卡、技能图谱、雷达图 | Streamlit 内置 `st.badge` / `st.metric` / `st.mermaid_chart` / `st.echarts_chart`；进度图用 Altair |
 
 ## 代码结构
 
 ```
-streamlit_app.py          入口：页面导航、侧边栏设置、学习记录导入导出
-app_pages/                各页面
+streamlit_app.py        入口：导航、侧边栏设置、学习记录同步
+app_pages/              today 今日任务 · plan 学习大纲 · drill 刷题 · mistakes 错题本 · write 写作文
+                        skillmap 技能图谱 · lessons 微课与规则卡 · progress 学习进度 · tutor 写作导师
 essay_coach/
-  ai.py                   Claude API 封装（结构化输出、流式输出、中文错误提示）
-  prompts.py              各功能的系统提示词和消息构造
-  schemas.py              结构化输出的 pydantic 模型（批改结果、大纲审阅等）
-  rubrics.py              评分标准与总分计算（分项分数在代码中校正并汇总）
-  lessons.py              课程内容
-  state.py                会话状态、跨页面共享的输入字段
-  ui.py                   批改报告、原文高亮、修改对比等界面组件
+  skills.py             技能图谱（33 个技能点、前置关系、评分维度）
+  items.py              题目格式与种子题库加载
+  content/              种子题库 items.json 与规则卡 rule_cards.json
+  mastery.py            Elo 能力估计、掌握等级、FSRS 复习卡片
+  drills.py             选题、判分、提示阶梯、错题本、AI 出题与核对
+  planner.py            学习大纲：候选清单、基础计划、AI 计划校验
+  essays.py             作文流程、反馈限量、错误进入错题本、迁移证据
+  store.py              浏览器存储同步、导入导出
+  ai.py                 Claude 调用（结构化输出、流式输出、服务端回退、中文错误提示）
+  prompts.py / schemas.py / rubrics.py / lessons.py / ui.py
+docs/RESEARCH.md        研究依据
 ```
 
-### 关于 AI 调用
+## AI 调用说明
 
-- 批改、大纲审阅等使用 JSON Schema 结构化输出，保证返回格式可解析；分项分数会按评分标准截断到合法范围，总分由代码计算（雅思按官方规则四舍五入到 0.5）。
-- 请求开启了服务端回退（`fallbacks: "default"`）：如果请求被安全分类器误拦，API 会自动换到推荐的备用模型重试，避免正常的写作请求失败。
-- 学习记录只保存在当前浏览器会话中，关闭页面前请在侧边栏导出。
+- 模型：`claude-opus-5-5`；判分和出题核对用低思考深度，作文批改和规划用侧边栏设置的深度。
+- 需要结构化结果的调用都使用 JSON Schema 结构化输出；分数在代码中按评分标准截断并汇总。
+- 开启了服务端回退（`fallbacks: "default"`）：请求被安全分类器误拦时自动换推荐的备用模型重试。
+- 局限：AI 打分没有用本地人工评分数据校准，因此以区间显示并标注“估计”；种子题库由 AI 编写并经 AI 核对，学生可以一键报告有问题的题目。

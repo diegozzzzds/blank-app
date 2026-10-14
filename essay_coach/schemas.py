@@ -1,132 +1,86 @@
-"""AI 结构化输出的数据模型（用于 JSON Schema 约束输出格式）。
+"""作文反馈相关的结构化输出模型。
 
-所有字段都设为必填、不设默认值，范围要求写在 description 里，
-因为结构化输出不支持数值范围约束；越界的值在代码中再做校正。
+反馈规则来自研究（见 docs/RESEARCH.md）：
+- 最多 3 个“重点问题”（高阶：切题、论证、结构）+ 最多 3 类“错误模式”（每类最多 3 处），其余只记录不展示；
+- 每条反馈包含：维度、引用原文、问题、原因（规则/评分描述）、修改策略（不写改好的句子）、自查问题；
+- 按“目标 → 现状 → 下一步”组织；只做针对任务的、引用原文的肯定，不做针对人的表扬或批评；
+- 分数是估计值，用区间展示。
+所有字段必填、无默认值，数值范围写在描述里，越界值在代码中校正。
 """
 
 from typing import Literal
 
 from pydantic import BaseModel, Field
 
-# ---------- 批改 ----------
 
-Category = Literal["grammar", "vocabulary", "logic", "structure", "evidence", "style", "mechanics"]
-Severity = Literal["major", "minor", "suggestion"]
-
-
-class CriterionScore(BaseModel):
-    name: str = Field(description="评分项名称，与评分标准中的名称和顺序完全一致")
-    score: float = Field(description="该项得分，介于 0 和该项满分之间")
-    comment: str = Field(description="评分理由：结合原文说明为什么是这个分数、离下一档还差什么")
+class CriterionEstimate(BaseModel):
+    name: str = Field(description="评分维度名称，与评分标准的名称和顺序一致")
+    score: float = Field(description="该维度的估计得分（在 0 与该维度满分之间）")
+    comment: str = Field(description="依据：结合原文说明为什么在这一档，以及上一档需要做到什么")
 
 
-class Annotation(BaseModel):
-    quote: str = Field(description="从学生原文中逐字复制的片段（3–25 个词），必须与原文完全一致，用于高亮定位")
-    category: Category
-    severity: Severity = Field(description="major=影响得分的重要问题，minor=次要错误，suggestion=可以更好的建议")
-    issue: str = Field(description="问题是什么、为什么是问题")
-    suggestion: str = Field(description="怎么改：修改方向或示例改写")
+class PriorityIssue(BaseModel):
+    criterion: str = Field(description="对应的评分维度")
+    kc: str = Field(description="对应的技能点 id，必须来自给定的技能清单")
+    quote: str = Field(description="从原文逐字复制的片段（3–30 个词），用于定位")
+    problem: str = Field(description="问题是什么")
+    why: str = Field(description="为什么是问题：对应的规则或评分描述")
+    how_to_fix: str = Field(description="修改策略：怎么想、怎么改；不要写出改好的句子或段落")
+    check_question: str = Field(description="学生改完后用来自查的一个问题")
 
 
-class ParagraphFeedback(BaseModel):
-    paragraph: int = Field(description="段落编号，对应原文中的 [P1]、[P2]……")
-    role: str = Field(description="这一段在文中的作用，如“开头段”“主体段 1”“结尾段”")
-    main_idea: str = Field(description="用一句话概括这段实际表达的中心（反向大纲）")
-    feedback: str = Field(description="针对这一段的具体反馈")
+class ErrorInstance(BaseModel):
+    quote: str = Field(description="从原文逐字复制的出错片段（2–20 个词）")
+    hint: str = Field(description="简短提示，指出问题方向，不写改正结果")
 
 
-class RevisionTask(BaseModel):
-    title: str = Field(description="简短的修改任务标题")
-    detail: str = Field(description="具体要做什么、在哪里改、改到什么程度算完成")
-    focus: Category
+class ErrorPattern(BaseModel):
+    kc: str = Field(description="对应的技能点 id，必须来自给定的技能清单")
+    pattern: str = Field(description="错误模式名称，如“逗号连句”")
+    rule: str = Field(description="一句话规则")
+    instances: list[ErrorInstance] = Field(description="最多 3 处例子")
 
 
-class GradingResult(BaseModel):
-    level_label: str = Field(description="一个简短的水平标签，如 “Band 6.5”“B+ 良好”“4/6”")
-    summary: str = Field(description="总体评价，3–5 句话")
-    criteria: list[CriterionScore]
-    strengths: list[str] = Field(description="2–4 条真正做得好的地方，具体到原文")
-    annotations: list[Annotation] = Field(description="5–15 条批注，按重要性排序")
-    paragraph_feedback: list[ParagraphFeedback] = Field(description="每一段一条")
-    revision_tasks: list[RevisionTask] = Field(description="3–5 个修改任务，按优先级排序，最重要的在前")
+class KCEvidence(BaseModel):
+    kc: str = Field(description="技能点 id")
+    status: Literal["demonstrated", "weak", "missing"] = Field(
+        description="demonstrated=文中正确运用了；weak=用了但有明显问题；missing=应该有但没有")
+    note: str = Field(description="依据（简短）")
 
 
-# ---------- 修改稿对比 ----------
-
-class TaskCheck(BaseModel):
-    task: str = Field(description="上一版的修改任务标题")
-    status: Literal["done", "partial", "not_done"]
-    comment: str = Field(description="这一任务完成得怎么样，结合新稿原文说明")
-
-
-class RevisionComparison(BaseModel):
-    overall: str = Field(description="对这次修改的总体评价，2–4 句话")
-    improvements: list[str] = Field(description="新稿中具体的进步")
-    regressions: list[str] = Field(description="新稿中变差或新出现的问题；没有则为空列表")
-    task_checks: list[TaskCheck]
+class EssayFeedback(BaseModel):
+    level_label: str = Field(description="简短的水平标签，如 “约 Band 6”")
+    criteria: list[CriterionEstimate]
+    goal: str = Field(description="目标：这类文章要做到什么（结合学生目标）")
+    now: str = Field(description="现状：这篇文章目前做到了什么、差在哪里（2–3 句）")
+    next: str = Field(description="下一步：最值得先做的一件事")
+    strengths: list[str] = Field(description="最多 2 条，必须引用原文、针对任务，不做空泛表扬")
+    priority_issues: list[PriorityIssue] = Field(description="最多 3 个，最重要的在前，优先高阶问题")
+    error_patterns: list[ErrorPattern] = Field(description="最多 3 类反复出现的语言错误")
+    kc_evidence: list[KCEvidence] = Field(description="文中能判断的技能点证据，8–15 条")
 
 
-class RevisionResult(BaseModel):
-    comparison: RevisionComparison
-    grading: GradingResult
+class IssueCheck(BaseModel):
+    index: int = Field(description="对应的重点问题序号（从 1 开始）")
+    status: Literal["fixed", "partly", "not_fixed"]
+    comment: str = Field(description="结合新稿原文说明；没改好时给提示，不写改好的句子")
 
 
-# ---------- 大纲 ----------
-
-class Angle(BaseModel):
-    stance: str = Field(description="一个可选的立场或切入角度（英文一句话）")
-    core_reason: str = Field(description="支持这个立场的核心理由")
-    evidence_ideas: list[str] = Field(description="2–3 个可以用的论据方向（不要编造精确数据）")
-
-
-class Brainstorm(BaseModel):
-    prompt_analysis: str = Field(description="题目拆解：话题、指令词要求、范围/限制词")
-    key_terms: list[str] = Field(description="需要界定或注意的关键词")
-    angles: list[Angle] = Field(description="2–3 个不同的立场/角度")
-    guiding_questions: list[str] = Field(description="3–5 个帮助学生自己思考的问题")
-    pitfalls: list[str] = Field(description="这道题容易跑题或失分的地方")
+class RevisionCheck(BaseModel):
+    overall: str = Field(description="对这次修改的总体评价（2–3 句）")
+    checks: list[IssueCheck]
+    surface_only: bool = Field(description="是否只改了表面（换词、改语法），没有处理重点问题")
+    new_problems: list[str] = Field(description="修改中新出现的问题；没有则为空列表")
+    criteria: list[CriterionEstimate]
 
 
-class SectionReview(BaseModel):
-    section: str = Field(description="大纲中的部分，如 “Thesis”“Body 1”“Conclusion”")
-    rating: Literal["strong", "ok", "weak"]
-    comment: str
-    suggestion: str
+class EssayPrompt(BaseModel):
+    prompt: str = Field(description="英文作文题目（完整题干）")
+    question_type: str = Field(description="题型（中文），如“同意/不同意”")
+    focus_tip: str = Field(description="结合本周技能的一句写作提醒（中文）；检测作文留空")
 
 
-class OutlineReview(BaseModel):
-    readiness: int = Field(description="0–100，大纲可以直接开始写作的成熟度")
-    overall: str = Field(description="总体评价，2–4 句话")
-    thesis_check: str = Field(description="thesis 是否回答题目、是否可辩论、是否具体")
-    sections: list[SectionReview]
-    logic_issues: list[str] = Field(description="论点重叠、逻辑跳跃、与 thesis 不一致等问题；没有则为空列表")
-    guiding_questions: list[str] = Field(description="2–4 个引导学生完善大纲的问题")
-
-
-class BodyPlan(BaseModel):
-    topic_sentence: str
-    evidence: list[str]
-    analysis: str = Field(description="这段的分析思路：论据如何支撑论点")
-
-
-class ModelOutline(BaseModel):
-    thesis: str
-    hook: str
-    background: str
-    body: list[BodyPlan]
-    counterargument: str
-    rebuttal: str
-    conclusion: str
-    teaching_notes: list[str] = Field(description="2–4 条说明：这个大纲为什么这样设计，学生可以学到什么")
-
-
-# ---------- 课堂练习 ----------
-
-class ExerciseFeedback(BaseModel):
-    stars: int = Field(description="1–5 星评分")
-    verdict: str = Field(description="一句话总评")
+class DiagnosticSummary(BaseModel):
+    summary: str = Field(description="诊断总结（中文，3–4 句）")
     strengths: list[str]
-    issues: list[str] = Field(description="需要改进的地方，按重要性排序")
-    next_step: str = Field(description="下一步具体怎么改")
-    example: str = Field(description="示范答案（遵循教学模式的要求）")
-    example_note: str = Field(description="示范答案的说明：好在哪里")
+    priorities: list[str] = Field(description="最需要提升的 3 个方面")
