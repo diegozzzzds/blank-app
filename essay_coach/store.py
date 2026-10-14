@@ -6,7 +6,8 @@
   写入组件一直挂载到浏览器确认为止，避免丢更新。
 自动化测试中没有浏览器：预先在 st.session_state["progress"] 放好记录即可。
 
-已知限制：同一浏览器同时开多个标签页时，以最后保存的那个为准。
+多个标签页：记录带一个修订号 rev。写入前在浏览器里比较，如果别的标签页已经保存了更新的版本，
+这个标签页就暂停写入并提示刷新，而不是把对方的记录覆盖掉。
 """
 
 import copy
@@ -36,9 +37,12 @@ DEFAULT = {
     "chat": [],            # 写作导师对话
     "focus_kcs": [],       # 最近一篇作文暴露的弱项，刷题时优先
     "flagged_items": [],   # 学生报告有问题的题目，不再出现
+    "rev": 0,              # 修订号：防止多个标签页互相覆盖
 }
 MAX_ATTEMPTS = 3000
 MAX_AI_ITEMS = 500
+MAX_CHAT = 200
+MAX_RETIRED_MISTAKES = 300
 
 
 # 学习日按北京时间划分（中国没有夏令时，固定 UTC+8），所有“今天/每天第一题/连续天数”都用它
@@ -140,11 +144,16 @@ def sync() -> dict | None:
                 if late and _has_data(ss.get("progress") or {}):
                     # 浏览器的记录来晚了：以浏览器里的为准，本次会话做的练习留一份备份供下载
                     ss["_ls_session_backup"] = json.dumps(ss["progress"], ensure_ascii=False, indent=1)
+                if late:  # 等待期间攒下的写入作废，不能覆盖浏览器里的记录
+                    ss.pop("_ls_pending", None)
+                    ss.pop("_ls_mounted_ver", None)
                 ss["progress"] = loaded
+                ss["_ls_base_rev"] = loaded.get("rev", 0)
                 if late:
                     st.toast("已读取这个浏览器里保存的学习记录。")
             elif "progress" not in ss:
                 ss["progress"] = new_progress()
+                ss["_ls_base_rev"] = 0
         ss["_ls_mounted_ver"] = None  # 本次运行还没有挂载写入组件
         flush()
     return ss["progress"]
@@ -155,22 +164,33 @@ def flush() -> None:
     ss = st.session_state
     pending = ss.get("_ls_pending")
     if (not pending or pending[0] == ss.get("_ls_mounted_ver") or ss.get("_ls_unavailable")
-            or ss.get("_ls_blocked")):
+            or ss.get("_ls_blocked") or ss.get("_ls_conflict")):
         return
-    ver, payload = pending
+    ver, payload, rev = pending
     ss["_ls_mounted_ver"] = ver
-    ok = _js_eval("(() => { try { localStorage.setItem(" + json.dumps(LS_KEY) + ", " + json.dumps(payload)
-                  + "); return 1; } catch (e) { return -1; } })()", f"ls_save_{ver}")
-    if ok in (1, -1) and ss.get("_ls_pending", (None,))[0] == ver:
+    base = ss.get("_ls_base_rev", 0)
+    key = json.dumps(LS_KEY)
+    # 比较并写入：浏览器里的修订号比本页读到的新，说明别的标签页保存过，返回 -2 不写
+    js = ("(() => { try { const cur = localStorage.getItem(" + key + "); "
+          "const r = cur ? (JSON.parse(cur).rev || 0) : 0; if (r > " + str(base) + ") return -2; "
+          "localStorage.setItem(" + key + ", " + json.dumps(payload) + "); return 1; } catch (e) { return -1; } })()")
+    ok = _js_eval(js, f"ls_save_{ver}")
+    if ok in (1, -1, -2) and ss.get("_ls_pending", (None,))[0] == ver:
         del ss["_ls_pending"]
         ss["_ls_write_error"] = ok == -1  # -1：通常是浏览器存储空间满了
+        if ok == 1:
+            ss["_ls_base_rev"] = rev
+        elif ok == -2:
+            ss["_ls_conflict"] = True
 
 
 def status() -> str:
-    """存储状态：ok / waiting（还在等浏览器）/ blocked（浏览器禁止存储）/ full（写入失败）。"""
+    """存储状态：ok / waiting（还在等浏览器）/ blocked（浏览器禁止存储）/ conflict（别的标签页保存了更新的记录）/ full（写入失败）。"""
     ss = st.session_state
     if ss.get("_ls_blocked"):
         return "blocked"
+    if ss.get("_ls_conflict"):
+        return "conflict"
     if ss.get("_ls_write_error"):
         return "full"
     if ss.get("_ls_unavailable"):
@@ -182,6 +202,7 @@ def start_without_storage() -> None:
     """浏览器一直没有回应时，让学生先开始用（本次不读写浏览器存储，之后读到再接上）。"""
     st.session_state["progress"] = new_progress()
     st.session_state["_ls_unavailable"] = True
+    st.session_state["_ls_base_rev"] = 0
 
 
 def progress() -> dict:
@@ -196,6 +217,11 @@ def save() -> None:
     ss = st.session_state
     p = progress()
     p["attempts"] = p["attempts"][-MAX_ATTEMPTS:]
+    p["chat"] = p["chat"][-MAX_CHAT:]
+    retired = [m for m in p["mistakes"] if m.get("retired")]
+    if len(retired) > MAX_RETIRED_MISTAKES:
+        drop = {id(m) for m in retired[:len(retired) - MAX_RETIRED_MISTAKES]}
+        p["mistakes"] = [m for m in p["mistakes"] if id(m) not in drop]
     if len(p["ai_items"]) > MAX_AI_ITEMS:
         keep = {m.get("item_id") for m in p["mistakes"] if not m.get("retired")}
         extra = len(p["ai_items"]) - MAX_AI_ITEMS
@@ -209,7 +235,8 @@ def save() -> None:
         p["ai_items"] = kept
     ver = ss.get("_ls_ver", 0) + 1
     ss["_ls_ver"] = ver
-    ss["_ls_pending"] = (ver, json.dumps(p, ensure_ascii=False))
+    p["rev"] = ss.get("_ls_base_rev", p.get("rev", 0)) + 1
+    ss["_ls_pending"] = (ver, json.dumps(p, ensure_ascii=False), p["rev"])
 
 
 def export_json() -> str:

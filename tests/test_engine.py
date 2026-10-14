@@ -338,3 +338,111 @@ def test_generated_items_fail_closed(progress, monkeypatch):
     assert len(made) == 1  # 第 2 题核对未通过
     monkeypatch.setitem(fake_claude.SAMPLES, "ItemCheckBatch", lambda req: {"results": []})  # 核对漏掉了所有题
     assert drills.generate_items(progress, "register") == []
+
+
+def test_old_cards_respect_shorter_interval_after_exam_moves_closer(progress):
+    now = datetime.now(timezone.utc)
+    card = mastery.review_card(progress, None, mastery.Rating.Good, now)
+    card["due"] = (now + timedelta(days=40)).isoformat()  # 以前没有考试日期时排得很远
+    progress["profile"]["exam_date"] = (store.study_day() + timedelta(days=50)).isoformat()
+    assert mastery.effective_due(card, progress) <= now + timedelta(days=10, minutes=1)  # 50 天 × 20%
+
+
+def test_repaired_weeks_get_matching_goals(progress):
+    week = lambda title, kcs: planner.WeekPlan.model_construct(  # noqa: E731
+        title=title, kcs=kcs, goals=["g"], why="y", lesson_focus="l", essay_task="e", checkpoint=False)
+    plan = planner.StudyPlan.model_construct(overview="o", daily_routine="d", milestones=[], weeks=[
+        week("w1", ["articles", "sent_boundary"]),
+        week("w2", ["prompt_analysis", "thesis", "topic_sentence", "support_evidence", "critical_questions"]),
+    ])
+    original = [set(w.kcs) for w in plan.weeks]
+    plan, notes = planner.validate_plan(progress, plan)
+    for w, orig in zip(plan["weeks"], original):
+        if set(w["kcs"]) == orig:
+            assert w["goals"] == ["g"]  # 没改动的周保留 AI 写的目标
+        else:  # 改动过的周：目标按实际安排的技能重写
+            assert w["goals"] == [f"学会：{KCS[k].desc}" for k in w["kcs"]]
+    assert any(set(w["kcs"]) != o for w, o in zip(plan["weeks"], original))
+    assert not any("顺延到下一周" in n and n.startswith(f"第 {len(plan['weeks'])} 周") for n in notes)
+
+
+class _FakeSt:
+    """store 只用到 session_state / sidebar / toast，这里用最小的替身代替真实的 Streamlit 运行时。"""
+
+    def __init__(self):
+        import contextlib
+
+        self.session_state = {}
+        self.sidebar = contextlib.nullcontext()
+        self.toast = lambda *a, **k: None
+
+
+@pytest.fixture
+def browser(monkeypatch):
+    fake = _FakeSt()
+    calls = []
+    replies = {}
+
+    def js_eval(expr, key):
+        calls.append((key, expr))
+        reply = replies.get(key.split("_")[1] if key.startswith("ls_save") else key)
+        return reply(expr) if callable(reply) else reply
+
+    monkeypatch.setattr(store, "st", fake)
+    monkeypatch.setattr(store, "_js_eval", js_eval)
+    return fake.session_state, calls, replies
+
+
+def test_late_storage_reply_does_not_overwrite_saved_history(browser):
+    import json
+
+    ss, calls, replies = browser
+    for _ in range(store.MAX_LOAD_TRIES):
+        store.sync()
+    assert store.status() == "waiting"
+    ss["progress"]["profile"] = {"level": "高中"}
+    ss["progress"]["attempts"].append({"item": "x"})
+    store.save()
+    store.flush()
+    saved = dict(store.new_progress(), attempts=[{"item": "old"}] * 5, rev=7)
+    replies["ls_load"] = json.dumps({"v": json.dumps(saved)})
+    store.sync()
+    store.flush()
+    assert len(ss["progress"]["attempts"]) == 5 and ss["_ls_session_backup"]
+    assert not [k for k, _ in calls if k.startswith("ls_save")]  # 等待期间那份记录没有写进浏览器
+    store.save()
+    store.flush()
+    assert "r > 7" in calls[-1][1]
+
+
+def test_other_tab_saved_newer_record_pauses_writes(browser):
+    import json
+
+    ss, calls, replies = browser
+    replies["ls_load"] = json.dumps({"v": json.dumps(dict(store.new_progress(), rev=3))})
+    store.sync()
+    replies["save"] = 1
+    store.save()
+    store.flush()
+    assert ss["_ls_base_rev"] == 4 and store.status() == "ok"
+    replies["save"] = -2  # 另一个标签页已经存了更新的版本
+    store.save()
+    store.flush()
+    assert store.status() == "conflict"
+    n = len(calls)
+    store.save()
+    store.flush()
+    assert len(calls) == n  # 冲突后不再写入
+
+
+def test_save_prunes_chat_and_retired_mistakes(browser):
+    ss, *_ = browser
+    ss["progress"] = store.new_progress()
+    p = ss["progress"]
+    p["chat"] = [{"role": "user", "content": str(i)} for i in range(store.MAX_CHAT + 50)]
+    p["mistakes"] = [{"kc": "articles", "card": {}, "retired": True, "n": i} for i in range(store.MAX_RETIRED_MISTAKES + 20)]
+    p["mistakes"].insert(0, {"kc": "articles", "card": {}, "retired": False, "n": -1})
+    store.save()
+    assert len(p["chat"]) == store.MAX_CHAT and p["chat"][-1]["content"] == str(store.MAX_CHAT + 49)
+    assert sum(m["retired"] for m in p["mistakes"]) == store.MAX_RETIRED_MISTAKES
+    assert p["mistakes"][0]["n"] == -1  # 还没移出错题本的错题保留

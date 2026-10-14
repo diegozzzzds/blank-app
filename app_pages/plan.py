@@ -30,8 +30,8 @@ with st.expander("① 我的目标", expanded=profile is None, icon=":material/f
         level = c3.selectbox("我现在的水平", LEVELS, index=LEVELS.index(p.get("level", "高中")))
         minutes = c4.slider("每天能练多少分钟", 10, 90, p.get("minutes_per_day", 25), step=5)
         has_date = st.checkbox("已经确定考试日期", value=bool(p.get("exam_date")))
-        saved = date.fromisoformat(p["exam_date"]) if p.get("exam_date") else date.today() + timedelta(weeks=10)
-        exam_date = st.date_input("考试日期", value=max(saved, date.today()), min_value=date.today(),
+        saved = date.fromisoformat(p["exam_date"]) if p.get("exam_date") else store.study_day() + timedelta(weeks=10)
+        exam_date = st.date_input("考试日期", value=max(saved, store.study_day()), min_value=store.study_day(),
                                   help="考试日期已过的话，请改成下一次考试的日期")
         notes = st.text_area("你觉得自己写作最大的困难是什么？（选填）", value=p.get("notes", ""), height=80)
         if st.form_submit_button("保存目标", type="primary"):

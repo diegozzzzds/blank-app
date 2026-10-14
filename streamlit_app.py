@@ -30,8 +30,7 @@ progress = store.sync()
 if progress is None:
     st.skeleton(height=160)
     st.caption("正在读取你保存在这个浏览器里的学习记录…")
-    if st.session_state.get("_ls_tries", 0) >= 2:
-        st.button("等不及了，先开始（读到记录后会自动接上）", on_click=store.start_without_storage)
+    st.button("如果一直停在这里，点这里先开始（读到记录后会自动接上）", on_click=store.start_without_storage)
     st.stop()
 
 
@@ -44,6 +43,8 @@ def _on_import() -> None:
         st.session_state["import_message"] = ("success", "已导入学习记录。")
     except (ValueError, UnicodeDecodeError) as e:
         st.session_state["import_message"] = ("error", f"导入失败：{e}")
+    except Exception:  # noqa: BLE001 - 任何意外都不应让回调报错
+        st.session_state["import_message"] = ("error", "导入失败：文件内容无法识别。")
 
 
 with st.sidebar:
@@ -56,6 +57,12 @@ with st.sidebar:
     st.segmented_control("AI 思考深度", list(ai.EFFORT_LEVELS), default="标准", key="effort_label",
                          help="越深入，批改越细致，但等待时间更长。刷题判分固定使用快速模式。")
 
+status = store.status()
+if status in ("full", "conflict"):  # 保存失败要放在显眼的地方提示
+    st.warning("浏览器存储空间已满，最近的修改没能保存。请在左侧“学习记录”里导出备份。" if status == "full" else
+               "另一个标签页也打开了 EssayCoach 并保存了更新的记录。为避免互相覆盖，这个页面的修改暂停保存：请刷新页面载入最新记录"
+               "（这里的修改可以先在左侧“学习记录”里导出）。", icon=":material/warning:")
+
 nav.run()
 
 # 学习记录面板放在页面运行之后渲染：导出的文件包含这一次刚保存的内容
@@ -66,10 +73,12 @@ with st.sidebar:
             st.warning("这个浏览器不允许保存数据（可能是无痕模式或禁用了网站数据），记录只在本次打开期间有效，请记得导出。")
         elif status == "full":
             st.warning("浏览器存储空间已满，最近的修改没能保存。请先导出学习记录备份。")
+        elif status == "conflict":
+            st.warning("另一个标签页保存了更新的记录，本页暂停保存。请刷新页面。")
         elif status == "waiting":
             st.warning("还没读到浏览器里保存的记录，本次的修改暂时不会保存到浏览器。")
         else:
-            st.caption("记录自动保存在这个浏览器里。换设备或清除浏览器数据前请先导出；同时开多个标签页时以最后保存的为准。")
+            st.caption("记录自动保存在这个浏览器里。换设备或清除浏览器数据前请先导出（导出前先点一下页面空白处，让正在输入的文字保存下来）。")
         st.download_button("导出学习记录（JSON）", store.export_json(), file_name="essaycoach_progress.json",
                            mime="application/json", width="stretch")
         if backup := st.session_state.get("_ls_session_backup"):

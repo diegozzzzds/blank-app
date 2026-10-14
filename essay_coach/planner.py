@@ -13,7 +13,7 @@ from datetime import date, timedelta
 
 from pydantic import BaseModel, Field
 
-from . import mastery
+from . import mastery, store
 from .schemas import KCId
 from .skills import CRITERIA, KCS, topo_order
 
@@ -33,7 +33,7 @@ def weeks_available(profile: dict) -> int:
     exam = profile.get("exam_date")
     if exam:
         try:
-            days = (date.fromisoformat(exam) - date.today()).days
+            days = (date.fromisoformat(exam) - store.study_day()).days
             return max(2, min(16, days // 7))
         except ValueError:
             pass
@@ -134,7 +134,8 @@ def validate_plan(progress: dict, plan: StudyPlan) -> tuple[dict, list[str]]:
     weeks = []
     carry: list[str] = []
     n_weeks = weeks_available(progress.get("profile") or {})
-    for i, w in enumerate(plan.weeks[:n_weeks]):
+    ai_weeks = plan.weeks[:n_weeks]
+    for i, w in enumerate(ai_weeks):
         kcs = []
         for k in carry + w.kcs:
             if k not in KCS:
@@ -157,8 +158,9 @@ def validate_plan(progress: dict, plan: StudyPlan) -> tuple[dict, list[str]]:
                     pending.remove(k)
                     changed = True
         carry = pending
-        for k in carry:
-            notes.append(f"第 {i + 1} 周：{KCS[k].name} 的前置技能还没安排或本周已满，顺延到下一周。")
+        if i + 1 < len(ai_weeks):  # 最后一周顺延不了，统一在下面的“未能安排”里说明
+            for k in carry:
+                notes.append(f"第 {i + 1} 周：{KCS[k].name} 的前置技能还没安排或本周已满，顺延到下一周。")
         planned.update(ok)
         weeks.append({**w.model_dump(), "kcs": ok, "checkpoint": w.checkpoint or (i + 1) % 2 == 0})
     # 最需要的技能必须出现
@@ -173,6 +175,12 @@ def validate_plan(progress: dict, plan: StudyPlan) -> tuple[dict, list[str]]:
                 planned.add(k)
                 notes.append(f"把高优先级技能“{KCS[k].name}”加入第 {i + 1} 周。")
                 break
+    for w, orig in zip(weeks, ai_weeks):
+        if set(w["kcs"]) != set(orig.kcs):  # 技能被校验改动过：标题和目标按实际安排重写，避免和内容对不上
+            w["title"] = "、".join(KCS[k].name for k in w["kcs"])
+            w["goals"] = [f"学会：{KCS[k].desc}" for k in w["kcs"]]
+            if w["kcs"]:
+                w["lesson_focus"] = KCS[w["kcs"][0]].name
     weeks = [w for w in weeks if w["kcs"]]
     placed = {k for w in weeks for k in w["kcs"]}
     dropped = [k for k in dict.fromkeys(requested) if k not in placed]
@@ -208,7 +216,7 @@ def install_plan(progress: dict, plan: dict) -> None:
 
     old = progress.get("plan") or {}
     plan["id"] = uuid.uuid4().hex[:8]
-    plan["created"] = date.today().isoformat()
+    plan["created"] = store.today()
     plan["current_week"] = 0
     plan["history"] = old.get("history", []) + ([{"created": old.get("created"), "weeks": len(old.get("weeks", []))}]
                                                  if old else [])
@@ -235,5 +243,5 @@ def week_progress(progress: dict, week: dict) -> float:
 
 
 def week_start(progress: dict, index: int) -> date:
-    created = date.fromisoformat((progress.get("plan") or {}).get("created", date.today().isoformat()))
+    created = date.fromisoformat((progress.get("plan") or {}).get("created", store.today()))
     return created + timedelta(days=7 * index)

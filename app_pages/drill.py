@@ -162,7 +162,6 @@ else:
                 if submit and not_an_attempt:
                     st.warning(not_an_attempt, icon=":material/info:")
                 elif submit:
-                    cur["tried"].append(attempt_key)
                     if cur["first_submit"] is None:
                         cur["first_submit"] = time.time()
                         cur["confidence"] = ss.get(f"conf_{key}")
@@ -195,6 +194,7 @@ else:
                                                mistake, drills.answer_text(item, response), wrong=cur["wrong"])
                         else:
                             cur["wrong"] += 1
+                            cur["tried"].append(attempt_key)  # 判过分才记下；AI 调用失败时允许原样重交
                         st.rerun()
 
             # ---------- 反馈 ----------

@@ -96,19 +96,24 @@ def _rating(score: float, hints: int, revealed: bool, confident: bool | None, fa
     return Rating.Good
 
 
-def scheduler(progress: dict) -> Scheduler:
-    profile = progress.get("profile") or {}
-    retention = 0.85 if profile.get("level") in ("初中",) else 0.9
+def max_interval_days(progress: dict | None) -> int:
+    """最长复习间隔：平时 60 天；设了考试日期时不超过剩余天数的 20%，保证考前至少再复习几轮。"""
     max_days = 60
-    exam = profile.get("exam_date")
+    exam = ((progress or {}).get("profile") or {}).get("exam_date")
     if exam:
         try:
-            days_left = (datetime.fromisoformat(exam).date() - datetime.now(timezone.utc).date()).days
+            days_left = (datetime.fromisoformat(exam).date() - study_day()).days
             max_days = max(1, min(max_days, int(days_left * 0.2)))
         except ValueError:
             pass
+    return max_days
+
+
+def scheduler(progress: dict) -> Scheduler:
+    profile = progress.get("profile") or {}
+    retention = 0.85 if profile.get("level") in ("初中",) else 0.9
     return Scheduler(desired_retention=retention, learning_steps=(), relearning_steps=(),
-                     maximum_interval=max_days, enable_fuzzing=False)
+                     maximum_interval=max_interval_days(progress), enable_fuzzing=False)
 
 
 def review_card(progress: dict, card: dict | None, rating: Rating, when: datetime) -> dict:
@@ -118,15 +123,17 @@ def review_card(progress: dict, card: dict | None, rating: Rating, when: datetim
 
 
 def effective_due(card: dict, progress: dict | None = None) -> datetime:
-    """复习到期时间。设了考试日期时，排在考试之后的复习提前到考前一天（旧卡片也一样）。"""
+    """复习到期时间。旧卡片按现在的最长间隔重新封顶；设了考试日期时，排在考试之后的复习提前到考前一天。"""
     due = _parse(card["due"])
+    last = _parse(card["last_review"]) if card.get("last_review") else None
+    if last is not None:  # 考试日期改近了：以前排得很远的复习也要按新的间隔提前
+        due = min(due, last + timedelta(days=max_interval_days(progress)))
     exam = ((progress or {}).get("profile") or {}).get("exam_date")
     if exam:
         try:
             cap = datetime.fromisoformat(exam).replace(tzinfo=timezone.utc) - timedelta(days=1)
         except ValueError:
             return due
-        last = _parse(card["last_review"]) if card.get("last_review") else None
         if due > cap and (last is None or last < cap):
             return cap
     return due

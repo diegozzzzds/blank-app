@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import timedelta
 
 import altair as alt
 import streamlit as st
@@ -52,7 +52,7 @@ st.caption("有帮助时做对很正常，但它容易让人以为“已经会�
 # ---------------- 每天练习量 ----------------
 st.subheader("最近 30 天")
 days = progress["days"]
-start = date.today() - timedelta(days=29)
+start = store.study_day() - timedelta(days=29)
 rows = [{"日期": (start + timedelta(days=i)).isoformat(),
          "独立做对": days.get((start + timedelta(days=i)).isoformat(), {}).get("solo_correct", 0)} for i in range(30)]
 bars = (alt.Chart(alt.Data(values=rows)).mark_bar(cornerRadiusTopLeft=4, cornerRadiusTopRight=4)

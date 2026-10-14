@@ -165,3 +165,36 @@ def test_tutor_has_guardrails(at):
     assert len(at.session_state["progress"]["chat"]) == 2
     system = fake_claude.CALLS[-1]["system"]
     assert "不替学生完成当前任务" in system and fake_claude.CALLS[-1]["fallbacks"] == "default"
+
+
+def test_failed_ai_grading_allows_resubmitting_same_answer(at, monkeypatch):
+    from essay_coach import ai
+
+    setup_profile_and_plan(at)
+    p = at.session_state["progress"]
+    p["flagged_items"] = [i.id for i in __import__("essay_coach.items", fromlist=["x"]).seed_items()
+                          if i.kc == "sent_boundary" and i.format != "fix"]
+    at.session_state["drill_request"] = {"mode": "kc", "kc": "sent_boundary"}
+    at.switch_page("app_pages/drill.py")
+    at.run()
+    cur = at.session_state["drill"]["current"]
+    it = Item.model_validate(cur["item"])
+    assert it.format == "fix"
+    key = f"{it.id}_{cur['n']}"
+
+    class Broken:
+        def __init__(self):
+            self.beta = __import__("types").SimpleNamespace(messages=__import__("types").SimpleNamespace(stream=self.fail))
+
+        def fail(self, **kwargs):
+            raise RuntimeError("network down")
+
+    monkeypatch.setattr(ai, "_client", lambda key: Broken())
+    at.text_area(key=f"ans_{key}").input("It rains , we stay home.").run()
+    btn(at, "提交").click().run()
+    assert any("连接中断" in e.value for e in at.error)
+    assert at.session_state["drill"]["current"]["wrong"] == 0
+    monkeypatch.setattr(ai, "_client", lambda key: fake_claude.FakeClient())
+    btn(at, "提交").click().run()
+    assert not any("已经提交过" in w.value for w in at.warning)
+    assert at.session_state["drill"]["current"]["wrong"] == 1  # 这次真的判了分
