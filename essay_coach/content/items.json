@@ -5943,5 +5943,1592 @@
    "下一段的关键是关系的“深度/质量”，你的句子应提到这一点，但不要展开。"
   ],
   "explanation": "过渡型结尾句既“收”又“引”：先承认本段的观点（技术让沟通更快、更方便），再用转折点出其局限，为下一段铺路。例如：While these tools have removed the barrier of distance, they have not necessarily brought people closer in a deeper sense. 这样，下一段讨论“线上交流取代深度的面对面交流”就显得顺理成章。"
+ },
+ {
+  "id": "prompt_analysis-01",
+  "kc": "prompt_analysis",
+  "format": "mcq",
+  "difficulty": 1,
+  "instruction": "阅读题目，选出这篇作文真正要讨论的核心问题。",
+  "content": "Some people believe that university education should be free for all students. To what extent do you agree or disagree?",
+  "options": [
+   "Education in general",
+   "Whether university education should be free for all students",
+   "Whether young people should go to university",
+   "The cost of living for university students"
+  ],
+  "answer": 1,
+  "option_explanations": [
+   "太宽泛。题目只谈 university education，焦点是“是否应该免费”。泛泛地谈教育会跑题。",
+   "正确。话题是大学教育，焦点是“是否应对所有学生免费”，指令要求你表明同意的程度。",
+   "偷换了问题。题目没有讨论该不该上大学，而是讨论是否应该免除学费。",
+   "相关但跑偏。生活费不等于学费，题目的焦点是 university education should be free。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "先找出题目中的大话题，再看话题后面跟着哪些具体限定。",
+   "核心问题＝话题＋限制词，比如 university、free、for all students。",
+   "哪个选项把题目里的限制词全部保留了，又没有加入新内容？"
+  ],
+  "explanation": "读题的第一步是找到话题（university education）和限制词（free, for all students）。核心问题必须同时包含它们：Whether university education should be free for all students。只抓住 education 这个大词，或者换成“上不上大学”“生活费”，都会造成跑题。"
+ },
+ {
+  "id": "prompt_analysis-02",
+  "kc": "prompt_analysis",
+  "format": "mcq",
+  "difficulty": 2,
+  "instruction": "阅读题目，选出对写作任务描述最准确的一项。",
+  "content": "In many cities, traffic congestion is becoming a serious problem. What are the causes of this problem, and what measures could be taken to solve it?",
+  "options": [
+   "Describe how traffic congestion affects people's daily lives.",
+   "Argue whether traffic congestion is really a serious problem.",
+   "Explain the causes of traffic congestion and suggest measures to solve it.",
+   "Compare traffic in cities with traffic in the countryside."
+  ],
+  "answer": 2,
+  "option_explanations": [
+   "题目问的是 causes（原因）和 measures（措施），没有问 effects（影响）。把原因写成影响是常见错误。",
+   "题目已经把交通拥堵当作严重问题，不要求你论证它是否严重。",
+   "正确。题目有两个指令：What are the causes 要求解释原因，what measures could be taken 要求提出措施。两部分都要写。",
+   "题目没有要求比较城市和农村，这个选项加入了题目没有的任务。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "注意题目中的两个疑问词组：What are the ... 和 what ... could be taken。",
+   "指令词决定你要“做什么”。causes 和 measures 分别对应什么任务？",
+   "排除把“原因”换成“影响”、或增加了新任务的选项。"
+  ],
+  "explanation": "指令词决定写作任务。本题有两个指令：What are the causes（原因）和 what measures could be taken to solve it（解决措施）。正确的任务是 Explain the causes of traffic congestion and suggest measures to solve it。把 causes 写成 effects，或者去争论问题是否严重，都没有完成指令。"
+ },
+ {
+  "id": "prompt_analysis-03",
+  "kc": "prompt_analysis",
+  "format": "mcq",
+  "difficulty": 3,
+  "instruction": "根据题目，选出最切题的主体段主题句。",
+  "content": "Some people think that young people should be required to do unpaid community work in their free time. Do you agree or disagree?",
+  "options": [
+   "Community work is a great way for retired people to stay active and meet others.",
+   "Many companies pay their young employees far too little for the work they do.",
+   "Volunteering abroad has become a popular way for students to travel.",
+   "Requiring teenagers to spend some of their spare time volunteering in their local community can teach them a sense of responsibility that classrooms cannot."
+  ],
+  "answer": 3,
+  "option_explanations": [
+   "人群错了。题目的限制词是 young people，退休老人不在讨论范围内。",
+   "偷换了 unpaid 这个限制词。题目讨论的是无偿社区服务，不是有偿工作的工资问题。",
+   "出国做志愿者旅行既不是 community work，也没有涉及“是否应该强制”。",
+   "正确。teenagers 对应 young people，requiring 对应 required，volunteering in their local community（志愿服务即无偿）对应 unpaid community work，spare time 对应 free time，并且给出了与立场相关的理由。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "把题目中的限制词逐个划出来：谁？做什么？有没有报酬？什么时间？是否强制？",
+   "切题的主题句要同时扣住 young people、required、unpaid community work、free time 这几个限制词。",
+   "逐个检查选项：哪个改变了人群？哪个把“无偿”换成了“有偿”？哪个换了活动类型或地点？"
+  ],
+  "explanation": "限制词把大话题缩小到题目真正的焦点。本题的焦点有四个：young people（人群）、required（强制）、unpaid community work（无偿社区服务）、in their free time（业余时间）。只有 “Requiring teenagers to spend some of their spare time volunteering in their local community...” 同时扣住了这些限制词。换人群、换成有偿工作或换成出国旅行，都属于部分跑题。"
+ },
+ {
+  "id": "prompt_analysis-04",
+  "kc": "prompt_analysis",
+  "format": "mcq",
+  "difficulty": 3,
+  "instruction": "阅读题目和学生写的一个主体段，选出这段话最主要的问题。",
+  "content": "Prompt: Many people believe that the main purpose of museums should be to educate the public rather than to entertain them. To what extent do you agree?\n\nStudent paragraph: Museums are expensive to run, and many governments struggle to fund them. In recent years, ticket prices have risen in many countries, which means that fewer families can afford to visit. As a result, some smaller museums have been forced to close.",
+  "options": [
+   "It discusses museums, which is not what the prompt is about.",
+   "It talks about funding and ticket prices instead of what the main purpose of museums should be.",
+   "It uses too many examples to support its point.",
+   "It should discuss art galleries instead of museums."
+  ],
+  "answer": 1,
+  "option_explanations": [
+   "错误。这段话确实在谈博物馆，话题没有错，问题在于没有抓住题目的焦点。",
+   "正确。题目的焦点是博物馆的主要目的应该是 educate 还是 entertain，这段话却只谈经费和票价，属于“话题对、焦点错”的部分跑题。",
+   "这段话几乎没有具体例子，例子的多少也不是主要问题。",
+   "题目讨论的就是 museums，没有理由换成 art galleries。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "先确认这段话的话题对不对，再看它有没有回答题目的焦点。",
+   "题目的焦点藏在 the main purpose ... educate rather than entertain 里。",
+   "这段话里出现过 educate、entertain 或 purpose 的意思吗？"
+  ],
+  "explanation": "“话题对、焦点错”是最隐蔽的跑题。这段话确实在谈 museums，但题目问的是博物馆的主要目的应该是教育还是娱乐（educate rather than entertain），经费和票价与这个焦点无关。主体段的主题句必须直接回应焦点，例如：Museums should mainly educate visitors, because they hold knowledge that cannot easily be found elsewhere."
+ },
+ {
+  "id": "prompt_analysis-05",
+  "kc": "prompt_analysis",
+  "format": "mcq",
+  "difficulty": 4,
+  "instruction": "阅读题目，选出最完整、最切题的主体段计划。",
+  "content": "Some people say that the best way to improve public health is by increasing the number of sports facilities. Others, however, say that this would have little effect and that other measures are required. Discuss both views and give your own opinion.",
+  "options": [
+   "Body 1: the health benefits of playing sport, such as a stronger heart; Body 2: the risk of injuries for people who play sport regularly.",
+   "Body 1: how new sports centres are planned and built; Body 2: how much they cost the government each year.",
+   "Body 1: why people today exercise less than in the past; Body 2: why fast food has become so popular among families.",
+   "Body 1: why more sports facilities could improve public health; Body 2: why other measures, such as health education, might work better; own opinion in the introduction and conclusion."
+  ],
+  "answer": 3,
+  "option_explanations": [
+   "焦点偏了。题目比较的是“增加体育设施”和“其他措施”哪个更能改善公众健康，而不是运动的好处和受伤风险。",
+   "只谈建设和成本，没有讨论体育设施对 public health 的作用，也没有讨论其他措施。",
+   "写成了“人们为什么少运动、快餐为什么流行”的原因分析，题目并没有问原因。",
+   "正确。两种观点（体育设施 vs. 其他措施）各占一段，开头和结尾都给出了自己的观点，完成了 discuss both views and give your own opinion 的全部要求。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "这道题有两种观点。先分别写出它们各自主张的“方法”是什么。",
+   "焦点是“改善公众健康的最佳方式”：一方说体育设施，另一方说其他措施。指令还要求 give your own opinion。",
+   "找出一个两段分别对应两种观点、并且包含个人观点的计划。"
+  ],
+  "explanation": "本题的焦点是“改善公众健康的最佳方式”。两种观点分别是 increasing sports facilities 和 other measures，指令是 discuss both views and give your own opinion。正确的计划要让两种观点各占一段，并明确表态。只谈运动本身、建设成本或少运动的原因，都是抓住了 sport、health 这些大词，却丢掉了真正的焦点。"
+ },
+ {
+  "id": "prompt_analysis-06",
+  "kc": "prompt_analysis",
+  "format": "mcq",
+  "difficulty": 4,
+  "instruction": "阅读题目和学生的主题句，选出这句话跑题的准确原因。",
+  "content": "Prompt: Some people think that the increasing use of computers and mobile phones for communication has had a negative effect on young people's reading and writing skills. To what extent do you agree or disagree?\n\nStudent's topic sentence: Spending long hours on mobile phones damages young people's eyesight and disturbs their sleep.",
+  "options": [
+   "It discusses health effects, while the prompt limits the focus to reading and writing skills.",
+   "It discusses young people, but the prompt is about people of all ages.",
+   "It discusses negative effects, but the prompt asks only about positive effects.",
+   "It mentions mobile phones but not computers, so it is completely off-topic."
+  ],
+  "answer": 0,
+  "option_explanations": [
+   "正确。题目的限制词是 reading and writing skills（读写能力），视力和睡眠属于健康问题，超出了题目的范围。",
+   "错误。题目明确写了 young people's，学生句子里的人群是对的。",
+   "错误。题目问的就是 negative effect，而且 to what extent 允许你同意或不同意。",
+   "只谈手机、不谈电脑不会导致跑题，一个主体段聚焦其中一种设备是可以的。真正的问题在于“影响的是什么”。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "把题目拆成三部分：什么东西 → 对谁 → 在哪个方面产生了影响。",
+   "最容易被忽略的限制词往往在句尾：has had a negative effect on ...？",
+   "eyesight 和 sleep 属于哪个领域？题目限定的是哪个领域？"
+  ],
+  "explanation": "这道题的限制词是 young people's reading and writing skills。学生只抓住了“电子设备”和“负面影响”，却把影响对象换成了视力和睡眠，属于部分跑题。切题的写法例如：Constant texting encourages young people to use abbreviations, which can weaken their formal writing skills."
+ },
+ {
+  "id": "prompt_analysis-07",
+  "kc": "prompt_analysis",
+  "format": "write",
+  "difficulty": 3,
+  "instruction": "用英文短语分析下面的题目，分三行写出：Topic（话题）、Focus / limiting words（焦点和限制词）、Task（你必须完成的任务）。",
+  "content": "Some people think that schools should teach children how to manage money. Others believe that this is the responsibility of parents. Discuss both views and give your own opinion.",
+  "options": [],
+  "answer": -1,
+  "option_explanations": [],
+  "sentences": [],
+  "accepted": [
+   "Topic: teaching children how to manage money (financial education)\nFocus / limiting words: who should be responsible — schools or parents; children; manage money\nTask: discuss both views (schools vs. parents) and give my own opinion",
+   "Topic: money-management education for children\nFocus / limiting words: schools vs. parents as the ones who should teach it\nTask: explain the view that schools should teach it, explain the view that parents should, and state which view I agree with"
+  ],
+  "criteria": "合格条件：(1) Topic 指出话题是儿童理财/金钱管理教育（teaching children to manage money / financial education for children），不能只写 education 或 money；(2) Focus 指出争议焦点是“由谁负责”，即学校还是父母（schools vs. parents），可以另外列出 children、manage money 等限制词；(3) Task 必须同时包含“讨论两种观点”和“给出自己的观点”两部分，缺一不合格；(4) 可以用短语或笔记形式，不要求完整句子。小的语法错误不扣分，但意思必须准确。",
+  "hints": [
+   "先找出整道题的大话题，再看两种观点在哪里产生分歧。",
+   "两种观点的分歧点就是焦点。Discuss both views and give your own opinion 里包含几个动作？",
+   "Task 一行要写出两件事：讨论什么，以及最后你自己还要做什么。"
+  ],
+  "explanation": "本题的话题是 teaching children to manage money。焦点不是“理财重不重要”，而是“谁来教”（schools vs. parents）。指令包含两个动作：discuss both views 和 give your own opinion。许多学生只写“理财教育的好处”，偏离了焦点；还有学生只讨论两方观点而不表态，没有完成任务。"
+ },
+ {
+  "id": "prompt_analysis-08",
+  "kc": "prompt_analysis",
+  "format": "write",
+  "difficulty": 5,
+  "instruction": "用英文完成两句话。第一句用自己的话改写（paraphrase）题目，必须保留所有限制词的意思；第二句说明你的文章将如何回应题目的指令。",
+  "content": "Some people believe that unpaid community service should be a compulsory part of high school programmes. To what extent do you agree or disagree?",
+  "options": [],
+  "answer": -1,
+  "option_explanations": [],
+  "sentences": [],
+  "accepted": [
+   "Some argue that secondary schools should require every student to do unpaid work in the local community as part of their studies. In this essay, I will explain why I only partly agree with this idea, giving two main reasons.",
+   "It is sometimes suggested that volunteering in the community should be a mandatory part of the high school curriculum. This essay will explain why I largely agree with this proposal."
+  ],
+  "criteria": "合格条件：(1) 第一句是改写而不是照抄，词汇或句式有明显变化；(2) 改写必须保留四个要素：unpaid（如 without pay / voluntary work / volunteering）、compulsory（如 required / mandatory / obligatory，不能弱化为 encouraged 或 optional）、high school（如 secondary school / teenagers at school）、community service（如 work in the local community）；(3) 第二句必须表明文章将给出同意程度（agree / disagree / partly agree）并用理由支撑，以回应 To what extent；(4) 语法基本正确。缺少任何一个限制词、改变题意，或者第二句不涉及表明立场，均不合格。",
+  "hints": [
+   "先把题目中的限制词全部划出来，数一数一共有几个。",
+   "改写时可以换词、换句式，但 unpaid、compulsory、high school、community service 的意思一个都不能丢，也不能被弱化。",
+   "检查你的改写：如果把 compulsory 换成 encouraged，题意还一样吗？第二句回应了 To what extent 吗？"
+  ],
+  "explanation": "高质量的读题体现在改写里：词可以换，意思不能变。unpaid 可以写成 without pay / volunteering，compulsory 可以写成 required / mandatory，high school 可以写成 secondary school，community service 可以写成 work in the local community。最常见的错误是把 compulsory 弱化为 encouraged，或者漏掉 unpaid，这样整篇文章讨论的就不再是原题。第二句要回应 To what extent，说明你同意到什么程度，并会给出理由。"
+ },
+ {
+  "id": "question_types-01",
+  "kc": "question_types",
+  "format": "mcq",
+  "difficulty": 1,
+  "instruction": "判断下面的题目属于哪种题型。",
+  "content": "Some people think that working from home is better than working in an office. To what extent do you agree or disagree?",
+  "options": [
+   "Advantages and disadvantages",
+   "Opinion (agree or disagree)",
+   "Problem and solution",
+   "Discuss both views and give your opinion"
+  ],
+  "answer": 1,
+  "option_explanations": [
+   "题目里没有 advantages and disadvantages 这类指令。",
+   "正确。To what extent do you agree or disagree 是典型的观点题，需要明确表明同意的程度。",
+   "题目没有提出需要解决的问题，也没有问 solutions。",
+   "题目只给出了一种观点，没有出现 Others believe... 和 Discuss both views。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "看题目最后一句的指令。",
+   "To what extent do you agree or disagree 要求你做什么？",
+   "这道题只给出了一种观点，并要求你表明对它的态度。"
+  ],
+  "explanation": "看指令句就能判断题型：To what extent do you agree or disagree? 是观点题（opinion essay）。你需要明确同意、不同意或部分同意，并且全文保持一致。它和 discuss both views 不同，后者的题目中会给出两种观点。"
+ },
+ {
+  "id": "question_types-02",
+  "kc": "question_types",
+  "format": "mcq",
+  "difficulty": 2,
+  "instruction": "选出能完整回应题目的主体段计划。",
+  "content": "Nowadays many people choose to shop online rather than in stores. What are the advantages and disadvantages of this trend?",
+  "options": [
+   "Body 1: advantages of online shopping; Body 2: reasons why online shopping is becoming popular.",
+   "Body 1: the history of online shopping; Body 2: the future of online shopping.",
+   "Body 1: problems facing physical stores; Body 2: solutions for physical stores.",
+   "Body 1: advantages of online shopping; Body 2: disadvantages of online shopping."
+  ],
+  "answer": 3,
+  "option_explanations": [
+   "缺少 disadvantages，而且“流行的原因”不是题目要求的内容。",
+   "历史和未来都不是题目的指令，完全没有回应利弊。",
+   "写成了“问题—解决”题，还把话题从网购换成了实体店。",
+   "正确。利弊题必须同时写 advantages 和 disadvantages，这个计划让两部分各占一段。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "找到题目中的指令词：What are the ... and ...?",
+   "利弊题有几个必答部分？",
+   "排除缺少其中一部分、或加入了题目没有要求的内容的计划。"
+  ],
+  "explanation": "Advantages and disadvantages 题有两个必答部分：利和弊。只写一方、改写成原因分析或问题—解决，都没有完整回应题目。注意：本题只问利弊，没有问 outweigh，所以不要求比较哪一方更重。加一句个人看法也可以，但利和弊都不能缺。"
+ },
+ {
+  "id": "question_types-03",
+  "kc": "question_types",
+  "format": "mcq",
+  "difficulty": 3,
+  "instruction": "阅读题目和学生的提纲，选出提纲最主要的问题。",
+  "content": "Prompt: Many young people today are leaving the countryside to live in big cities. Why is this happening? What problems does it cause?\n\nStudent's outline:\nBody 1: There are more job opportunities in cities.\nBody 2: Cities have better schools and hospitals.\nBody 3: Cities offer more entertainment for young people.",
+  "options": [
+   "It answers only the first question and ignores the problems this trend causes.",
+   "It should say whether moving to cities is a good thing.",
+   "It has too many body paragraphs for an essay.",
+   "It discusses big cities instead of the countryside."
+  ],
+  "answer": 0,
+  "option_explanations": [
+   "正确。这是两问题：Why（原因）和 What problems（问题）。三个主体段都在写原因，第二问完全没有回答。",
+   "题目没有问这是好事还是坏事，不需要评价这一趋势。",
+   "三个主体段本身没有问题，问题在于它们全都集中在第一问上。",
+   "题目讲的是年轻人搬到城市，谈城市的吸引力本身是切题的。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "数一数题目里有几个问号。",
+   "两问题（two-part question）要求每一问都得到回答。",
+   "看三个主体段：它们回答的分别是哪一个问题？"
+  ],
+  "explanation": "两问题题型（two-part question）有两个直接问题：Why is this happening? 和 What problems does it cause? 学生三段都在写原因，第二问完全缺失，会严重影响 Task Response 分数。合理的提纲例如：Body 1 写原因（工作机会、公共服务），Body 2 写问题（农村人口老龄化、城市住房压力）。"
+ },
+ {
+  "id": "question_types-04",
+  "kc": "question_types",
+  "format": "mcq",
+  "difficulty": 3,
+  "instruction": "选出最符合题目要求的开头段 thesis。",
+  "content": "Some people believe that governments should spend more money on public health campaigns, while others think that individuals should be responsible for their own health. Discuss both views and give your own opinion.",
+  "options": [
+   "This essay will discuss both views.",
+   "I strongly believe that individuals are responsible for their own health, so this essay will explain only why I hold this view.",
+   "This essay will examine both positions before arguing that governments, rather than individuals, should take the leading role in protecting public health.",
+   "Both views have their own advantages and disadvantages."
+  ],
+  "answer": 2,
+  "option_explanations": [
+   "只说要讨论两种观点，没有给出自己的观点，缺少 give your own opinion。",
+   "只讨论自己支持的一方，缺少对另一种观点的讨论，违背了 discuss both views。",
+   "正确。既预告了讨论两种观点，又给出了明确的个人立场。",
+   "写成了利弊题，而且没有表明自己的观点。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "这道题的指令包含几个动作？",
+   "Discuss both views and give your own opinion＝讨论两种观点＋表明自己的观点。",
+   "找出同时完成这两个动作的选项。"
+  ],
+  "explanation": "Discuss both views and give your own opinion 有两个必须完成的动作：讨论两种观点，以及给出自己的观点。thesis 应该同时预告这两点，例如 This essay will examine both positions before arguing that governments should take the leading role in protecting public health。只讨论不表态，或者只写一方，都没有完整回应题目。"
+ },
+ {
+  "id": "question_types-05",
+  "kc": "question_types",
+  "format": "mcq",
+  "difficulty": 3,
+  "instruction": "选出最能完整回应题目的结论句。",
+  "content": "More and more students are taking online courses instead of attending classes in person. Do the advantages of this outweigh the disadvantages?",
+  "options": [
+   "In conclusion, online courses have both advantages and disadvantages, so every student should think carefully before choosing one.",
+   "In conclusion, although online courses can leave students feeling isolated, their flexibility and lower cost mean that the benefits outweigh the drawbacks for most learners.",
+   "In conclusion, students should study hard and stay motivated, whether they learn online or in a traditional classroom.",
+   "In conclusion, the government should ban online courses for school students, because children need a teacher in the room."
+  ],
+  "answer": 1,
+  "option_explanations": [
+   "只说“有利有弊”，再加一句泛泛的建议，没有回答“利是否大于弊”这个核心问题。",
+   "正确。既提到了弊端（孤独感），也提到了优势（灵活、便宜），并明确判断利大于弊。",
+   "偏离题目，谈的是学习态度，没有比较利弊。",
+   "提出了一个全新的极端建议和新理由，没有回答利和弊哪一方更重。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "注意题目中的关键动词 outweigh。",
+   "outweigh 题不仅要写利弊，还必须做出什么判断？",
+   "找出明确说出哪一方更重的那一句。"
+  ],
+  "explanation": "Do the advantages outweigh the disadvantages? 要求你做出比较判断：哪一方更重。只说 There are both advantages and disadvantages 等于没有回答问题。好的结论会先承认另一方，再清楚地下判断，例如 the benefits outweigh the drawbacks for most learners。"
+ },
+ {
+  "id": "question_types-06",
+  "kc": "question_types",
+  "format": "mcq",
+  "difficulty": 4,
+  "instruction": "阅读题目和学生作文的概要，选出最主要的问题。",
+  "content": "Prompt: In many countries, more and more people are choosing to live alone. Is this a positive or negative development?\n\nStudent's essay summary:\nBody 1: Reasons why people live alone (higher incomes, later marriage).\nBody 2: Problems of living alone, such as loneliness.\nConclusion: There are many reasons why people live alone, and this trend will continue.",
+  "options": [
+   "It should have discussed other people's opinions about living alone.",
+   "It should have discussed only the positive effects of living alone.",
+   "It spends a whole paragraph on reasons, which were not asked for, and never judges whether the trend is positive or negative overall.",
+   "It is fine, because describing reasons and problems fully answers the question."
+  ],
+  "answer": 2,
+  "option_explanations": [
+   "题目问的是你认为这是积极还是消极的发展，并不要求讨论他人的观点。",
+   "题目允许你得出任何结论，并不要求只写积极的一面。",
+   "正确。positive or negative development 要求做出总体评价，但文章花了一整段写题目没问的原因，结尾也没有给出判断。",
+   "错误。描述原因和问题不等于评价趋势，“积极还是消极”这个核心问题没有得到回答。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "题目最后的问句要求你给出什么样的答案？",
+   "Positive or negative development 题必须给出一个总体判断，并且只回答题目问到的内容。",
+   "检查学生的结论：它回答“积极还是消极”了吗？Body 1 的内容是题目问的吗？"
+  ],
+  "explanation": "Is this a positive or negative development? 要求你给出总体判断（可以是“总体积极，但有隐忧”），并用主体段支撑这个判断。学生写的原因是题目没有问的内容；写了问题却没有得出结论，结尾也只是重复“原因很多”。正确的做法是在 thesis 中写明 I believe this is largely a positive development，再用主体段分别论证积极面、回应消极面。"
+ },
+ {
+  "id": "question_types-07",
+  "kc": "question_types",
+  "format": "mcq",
+  "difficulty": 4,
+  "instruction": "选出能回应题目所有部分的主体段计划。",
+  "content": "Many people now use social media as their main source of news. Why is this the case? Is this a positive or negative development?",
+  "options": [
+   "Body 1: why people turn to social media for news (speed, convenience, free access); Body 2: why this is mainly negative (misinformation, one-sided news), with a clear overall view.",
+   "Body 1: advantages of social media; Body 2: disadvantages of social media.",
+   "Body 1: why newspapers are declining; Body 2: how governments can stop fake news.",
+   "Body 1: speed; Body 2: convenience; Body 3: free access."
+  ],
+  "answer": 0,
+  "option_explanations": [
+   "正确。第一段回答 Why（原因），第二段回答 positive or negative（评价并给出明确立场），两部分都完成了。",
+   "太宽泛：谈的是社交媒体整体的利弊，而不是“把社交媒体当作主要新闻来源”这一现象。既没有回答原因，也没有总体判断。",
+   "报纸衰落不是题目问的内容；“如何阻止假新闻”是解决办法，题目也没有要求。",
+   "三段都在回答第一问（原因），完全没有回答第二问。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "题目有两个问句，它们分别属于什么题型？",
+   "第一问要求解释原因，第二问要求做出积极或消极的判断。两问都必须回答。",
+   "排除只回答一问、改变了话题，或回答了题目没有问的内容的计划。"
+  ],
+  "explanation": "这是混合型两问题。第一问 Why is this the case? 问原因，第二问 Is this a positive or negative development? 要求评价。好的计划让每一问各占一段，并在评价段给出明确立场。把话题扩大成“社交媒体的利弊”，或者只写原因，都没有完整回应题目。"
+ },
+ {
+  "id": "question_types-08",
+  "kc": "question_types",
+  "format": "mcq",
+  "difficulty": 5,
+  "instruction": "阅读题目，选出对题目回应最完整的一篇作文概要。",
+  "content": "Some people think that university students should be free to study whatever subjects they like. Others believe that they should only be allowed to study subjects that will be useful in the future, such as science and technology. Discuss both views and give your own opinion.",
+  "options": [
+   "The writer argues only that students should study useful subjects, giving three strong reasons, and never mentions the other view.",
+   "The writer discusses both views in equal detail and concludes: 'Both views are reasonable, so it is hard to say which one is better.'",
+   "The writer discusses the advantages and disadvantages of studying science and technology.",
+   "The writer discusses both views and states in the introduction and conclusion that students should be free to choose, but that universities should give clear information about job prospects."
+  ],
+  "answer": 3,
+  "option_explanations": [
+   "只写了一方观点，没有完成 discuss both views。",
+   "两方都讨论了，但结尾回避表态，没有完成 give your own opinion。在这类题中，“保持中立”并不安全。",
+   "把题目改成了理工科的利弊题，丢掉了“自由选择 vs. 只学有用学科”这个焦点。",
+   "正确。两种观点都讨论了，并给出了一个有条件但明确的观点：支持自由选择，同时由大学提供就业信息。观点可以有细微差别，只要清楚且前后一致。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "这道题的指令包括哪两个动作？",
+   "观点不一定是“完全支持某一方”。有条件的立场也算观点，但必须清楚。",
+   "找出既讨论了两种观点、又在开头和结尾表明同一立场的概要。"
+  ],
+  "explanation": "Discuss both views and give your own opinion 要求两方都讨论，并给出自己的观点。很多学生以为“两边都有道理”是安全的中立答案，其实这样没有完成 give your own opinion。观点可以有细微差别，例如 students should be free to choose, but universities should give clear information about job prospects，只要它清楚、具体，并且开头和结尾一致。"
+ },
+ {
+  "id": "thesis-01",
+  "kc": "thesis",
+  "format": "mcq",
+  "difficulty": 1,
+  "instruction": "下面哪一句可以作为 thesis（论点句）？",
+  "content": "Prompt: Should schools require students to wear uniforms?",
+  "options": [
+   "Many schools in China require students to wear uniforms.",
+   "School uniforms come in many different colours and styles.",
+   "Schools should require uniforms, because they reduce peer pressure and save families money.",
+   "Some people like school uniforms, and some people do not."
+  ],
+  "answer": 2,
+  "option_explanations": [
+   "这是一个事实陈述，无法辩论，也没有回答“应不应该”。",
+   "这是对校服的描述，与题目的问题无关。",
+   "正确。它直接回答了题目（should require），立场明确，还给出了两个理由。",
+   "只描述了人们意见不同，作者自己没有表态。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "thesis 必须回答题目中的问题：Should ...?",
+   "事实和描述不能当 thesis，因为没有人会反对它们。",
+   "哪一句有明确的 should 或 should not，并且说明了理由？"
+  ],
+  "explanation": "Thesis 必须回答题目，并且是可以辩论的观点。事实（Many schools require uniforms）和描述（uniforms come in many colours）无法辩论；“有人喜欢，有人不喜欢”没有立场。正确示例：Schools should require uniforms, because they reduce peer pressure and save families money。"
+ },
+ {
+  "id": "thesis-02",
+  "kc": "thesis",
+  "format": "mcq",
+  "difficulty": 2,
+  "instruction": "选出最直接回答题目的 thesis。",
+  "content": "Prompt: Some people think that governments should invest more in renewable energy. To what extent do you agree or disagree?",
+  "options": [
+   "I completely agree that governments should increase their investment in renewable energy, as this would reduce pollution and create new jobs.",
+   "Renewable energy has become a hot topic in recent years.",
+   "There are many kinds of renewable energy, such as solar and wind power.",
+   "Energy is important in everyone's life."
+  ],
+  "answer": 0,
+  "option_explanations": [
+   "正确。它回答了 To what extent（completely agree），并给出了两个具体理由。",
+   "这是背景句，可以放在开头段的前面，但没有表明立场。",
+   "这是事实，无法辩论，也没有回答题目。",
+   "过于空泛，与题目的问题（是否应该增加投资）无关。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "题目要求你表明同意的程度。",
+   "看看哪一句包含 agree 或 disagree，并且有理由。",
+   "背景句和事实句可以出现在开头段，但它们不是 thesis。"
+  ],
+  "explanation": "To what extent do you agree or disagree 题的 thesis 要明确同意的程度（completely / largely / partly agree，或 disagree），最好附上理由。“热门话题”“种类很多”“能源很重要”都只是背景或空话，不能代替 thesis。"
+ },
+ {
+  "id": "thesis-03",
+  "kc": "thesis",
+  "format": "mcq",
+  "difficulty": 3,
+  "instruction": "四个句子都与题目有关。选出最具体、最有效的 thesis。",
+  "content": "Prompt: Is it better for children to grow up in the countryside or in a city?",
+  "options": [
+   "Where children grow up is an important issue for every family.",
+   "Both the countryside and cities have advantages for children.",
+   "Growing up in the countryside is better for children.",
+   "Growing up in the countryside is better for children, because it offers cleaner air, more space for outdoor play and closer contact with nature."
+  ],
+  "answer": 3,
+  "option_explanations": [
+   "只说“这个问题很重要”，没有回答哪个更好。",
+   "回避选择。题目问的是“哪个更好”，这句没有给出答案。",
+   "有立场，但没有理由。读者不知道文章会从哪些方面论证，不够具体。",
+   "正确。立场明确，并预告了三个具体理由，读者可以预见主体段的内容。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "先排除没有回答“哪个更好”的句子。",
+   "在有立场的句子中，好的 thesis 还会预告主要理由。",
+   "比较剩下的选项：哪一句能让读者猜到主体段会写什么？"
+  ],
+  "explanation": "有效的 thesis 不仅表明立场，还要具体：预告主要理由，给读者一张文章的路线图。Growing up in the countryside is better for children 立场清楚，但太笼统。加上 because it offers cleaner air, more space for outdoor play and closer contact with nature 之后，主体段的内容就一目了然。"
+ },
+ {
+  "id": "thesis-04",
+  "kc": "thesis",
+  "format": "mcq",
+  "difficulty": 3,
+  "instruction": "一篇作文的 thesis 如下。选出与它立场一致的结尾句。",
+  "content": "Thesis: I firmly believe that homework should be banned in primary schools, because it takes away children's time to play and does little to improve their learning.",
+  "options": [
+   "In conclusion, homework has both benefits and drawbacks, so each school should decide for itself.",
+   "In conclusion, homework is necessary for older students who are preparing for important exams.",
+   "In conclusion, parents should help their children with homework every evening.",
+   "In conclusion, primary schools should abolish homework, since it robs young children of playtime while offering little academic benefit."
+  ],
+  "answer": 3,
+  "option_explanations": [
+   "立场漂移：开头 firmly believe 应该禁止，结尾却变成“有利有弊，各校自己决定”。",
+   "改变了讨论对象（older students），也没有重申对小学作业的立场。",
+   "与 thesis 矛盾：既然主张取消作业，就不应该建议家长每晚辅导作业。",
+   "正确。换了说法（abolish, robs ... of playtime, little academic benefit），但立场和理由与 thesis 完全一致。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "先确认 thesis 的立场是什么，讨论的对象是谁。",
+   "全文立场必须一致：结尾不能弱化、改变或反对开头的观点。",
+   "找出仍然主张小学取消作业、只是换了措辞的那一句。"
+  ],
+  "explanation": "论点必须全文一致。开头说 firmly believe homework should be banned in primary schools，结尾就不能变成“有利有弊”，也不能转到中学生或家长辅导上。正确的结尾用不同的词重申同一立场：primary schools should abolish homework, since it robs young children of playtime while offering little academic benefit。"
+ },
+ {
+  "id": "thesis-05",
+  "kc": "thesis",
+  "format": "mcq",
+  "difficulty": 4,
+  "instruction": "选出最好的 thesis。",
+  "content": "Prompt: Many people believe that social media has done more harm than good. To what extent do you agree or disagree?",
+  "options": [
+   "Social media is used by billions of people around the world every day.",
+   "While social media helps people stay in touch, I believe its damage to mental health and its role in spreading false information mean that it has done more harm than good.",
+   "This essay will discuss whether social media has done more harm than good.",
+   "Social media has done both harm and good, and everyone has their own opinion about it."
+  ],
+  "answer": 1,
+  "option_explanations": [
+   "事实陈述，无法辩论，也没有回答 more harm than good。",
+   "正确。它承认了好处（stay in touch），明确判断弊大于利，并预告了两个具体理由。",
+   "只是预告要讨论，没有表明立场。To what extent 题需要明确的态度。",
+   "回避表态，“每个人都有自己的看法”是典型的空话。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "题目要求你判断 harm 和 good 哪个更多。",
+   "“This essay will discuss...” 只是预告，thesis 需要真正表态。",
+   "找出既有判断、又有具体理由的那一句。"
+  ],
+  "explanation": "好的 thesis＝回答题目＋可辩论＋具体。This essay will discuss... 只是预告，没有表态；“有利有弊、各有看法”是在回避。正确示例先用 While 让步，再给出明确判断和两个理由：its damage to mental health and its role in spreading false information mean that it has done more harm than good。"
+ },
+ {
+  "id": "thesis-06",
+  "kc": "thesis",
+  "format": "mcq",
+  "difficulty": 5,
+  "instruction": "选出最适合这道 discuss both views 题目的 thesis。",
+  "content": "Prompt: Some people think that international tourism has brought enormous benefits to many places. Others think that it has caused serious problems. Discuss both views and give your own opinion.",
+  "options": [
+   "Tourism brings both benefits and problems, and this essay will discuss both.",
+   "International tourism has brought enormous benefits to many places, but it has also caused serious problems.",
+   "Although international tourism can damage fragile environments and local cultures, I believe its economic benefits outweigh these problems, provided that governments limit visitor numbers in sensitive areas.",
+   "I think tourism is good because it is good for the economy and good for people."
+  ],
+  "answer": 2,
+  "option_explanations": [
+   "预告了讨论两方，但没有自己的观点，缺少 give your own opinion。",
+   "几乎照抄题目，只是把两种观点连在一起，没有表态。",
+   "正确。它承认了另一方（环境和文化问题），给出了明确且有条件的观点（经济收益更大，但需要限制游客数量），具体、可辩论。",
+   "有立场，但理由空泛（good ... good），还完全忽略了另一种观点，不适合 discuss both views 题。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "这类题的 thesis 既要体现“两种观点”，又要体现“你的观点”。",
+   "照抄题目、只说“有好有坏”都不算观点；空泛的 good 也不够具体。",
+   "找出既承认另一方的观点、又明确表达自己的判断，并给出具体理由或条件的句子。"
+  ],
+  "explanation": "Discuss both views 题的最佳 thesis 通常是“让步＋立场＋理由或条件”：Although X, I believe Y, because / provided that Z。这样既表明你会讨论两方，又给出了具体、可辩论的观点。照抄题目、只说“两方都讨论”，或者使用 good 这样空泛的词，都不是有效的论点句。"
+ },
+ {
+  "id": "thesis-07",
+  "kc": "thesis",
+  "format": "write",
+  "difficulty": 3,
+  "instruction": "为下面的题目写一个 thesis（1–2 句）：表明明确的立场，并预告至少一个具体理由。",
+  "content": "Some people believe that children should start learning a foreign language at primary school rather than at secondary school. Do you agree or disagree?",
+  "options": [],
+  "answer": -1,
+  "option_explanations": [],
+  "sentences": [],
+  "accepted": [
+   "I agree that children should begin learning a foreign language at primary school, because young learners pick up pronunciation more easily and have more years in which to build fluency.",
+   "I disagree that foreign languages should be introduced at primary school, as young children first need a solid foundation in their native language, and limited school hours are better spent on basic literacy and numeracy."
+  ],
+  "criteria": "合格条件：(1) 明确表明立场（agree / disagree / partly agree），不能写“有利有弊”或“见仁见智”；(2) 必须回应“从小学开始 vs. 从中学开始”这一时间对比，而不是泛谈学外语的好处；(3) 至少包含一个具体理由（如发音更容易习得、学习年限更长、需要先打好母语基础）；(4) 是可以辩论的观点，而不是事实陈述；(5) 不照抄题目；(6) 语法基本正确。",
+  "hints": [
+   "先决定你的立场：同意、不同意，还是部分同意。",
+   "thesis 要回答“小学开始还是中学开始更好”，并给出至少一个理由。",
+   "用 I agree/disagree that ... because ... 的框架，再检查你的理由是否和“开始学习的年龄”有关。"
+  ],
+  "explanation": "好的 thesis 必须回答题目真正的焦点：开始学外语的时间（primary vs. secondary），而不是“学外语重要吗”。在立场之后用 because 或 as 引出一两个具体理由，例如 young learners pick up pronunciation more easily，读者就能预见主体段的内容。"
+ },
+ {
+  "id": "thesis-08",
+  "kc": "thesis",
+  "format": "write",
+  "difficulty": 5,
+  "instruction": "下面的 thesis 很弱。请把它改写成一句有力的 thesis：明确回答“同意到什么程度”，并预告两个理由，或者一个理由加一个条件。",
+  "content": "Prompt: In many cities, the use of private cars should be restricted. To what extent do you agree or disagree?\n\nWeak thesis: Cars have advantages and disadvantages, and different people have different opinions.",
+  "options": [],
+  "answer": -1,
+  "option_explanations": [],
+  "sentences": [],
+  "accepted": [
+   "I largely agree that private car use should be restricted in city centres, since this would cut air pollution and ease congestion, but such limits should only be introduced once public transport is reliable enough to replace driving.",
+   "I strongly agree that cities should limit the use of private cars, because fewer cars would mean cleaner air and safer streets for pedestrians and cyclists."
+  ],
+  "criteria": "合格条件：(1) 明确表达同意程度（如 strongly agree / largely agree / partly agree / disagree），不能再出现“有利有弊”“看法不同”这类回避；(2) 必须针对“限制城市中私家车的使用”，而不是泛谈汽车的利弊；(3) 预告两个具体理由，或者一个理由加一个限制条件（如“在公共交通完善之后”）；(4) 1–2 句，语法正确，表达可辩论的观点；(5) 如果是部分同意，必须说清楚同意哪部分、保留哪部分。",
+  "hints": [
+   "原句没有回答题目的哪一部分？",
+   "To what extent 题需要一个程度词（strongly / largely / partly），再加上理由或条件。",
+   "试着用 I ... agree that ..., since ..., but ... 的结构，并确保句子谈的是“限制城市中的私家车”。"
+  ],
+  "explanation": "原句有三个问题：没有表态；焦点从“限制私家车”扩大成了“汽车的利弊”；没有理由。改写时，先用程度词回答 To what extent，再锁定焦点（restricting private cars in cities），最后用 since 或 because 给出理由，必要时用 but 加上限制条件。部分同意完全可以，前提是说清楚同意什么、保留什么。"
+ },
+ {
+  "id": "introduction-01",
+  "kc": "introduction",
+  "format": "mcq",
+  "difficulty": 1,
+  "instruction": "下面四句分别是不同作文的第一句。哪一句是应该避免的“万能套话”开头？",
+  "content": "Four possible opening sentences from different essays:",
+  "options": [
+   "With the development of society, more and more people are paying attention to this problem.",
+   "Over the past twenty years, the number of private cars in Chinese cities has risen dramatically.",
+   "Few inventions have changed daily life as quickly as the smartphone.",
+   "Fast food has become a regular part of many families' diets."
+  ],
+  "answer": 0,
+  "option_explanations": [
+   "正确，这就是应该避免的套话。它可以套在任何题目上（“这个问题”指什么都行），没有提供任何与话题相关的信息。",
+   "具体，且与城市交通话题直接相关，是有效的开头。",
+   "直接引出智能手机话题，有吸引力，是有效的开头。",
+   "与饮食健康话题直接相关，是有效的开头。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "想一想：哪一句可以原封不动地放在任何一篇作文的开头？",
+   "好的开头句必须与具体话题相关。套话里通常有 this problem 这类空洞的指代。",
+   "看看每一句有没有提到具体的事物（汽车、手机、快餐等）。哪一句一个具体事物都没有？"
+  ],
+  "explanation": "With the development of society, more and more people... 是中国学生最常用的套话之一。它不包含任何具体信息，可以套在任何题目上，阅卷人一眼就能认出来。好的开头句要与具体话题直接相关，例如 Few inventions have changed daily life as quickly as the smartphone。"
+ },
+ {
+  "id": "introduction-02",
+  "kc": "introduction",
+  "format": "mcq",
+  "difficulty": 2,
+  "instruction": "下面三个句子来自同一个开头段，选出最合理的顺序。",
+  "content": "(1) This essay argues that governments should provide free public Wi-Fi in all cities, as this would narrow the digital divide and support small businesses.\n(2) Internet access has become almost as essential as electricity in modern life.\n(3) However, many low-income families still cannot afford a reliable connection at home.",
+  "options": [
+   "(1) → (2) → (3)",
+   "(2) → (1) → (3)",
+   "(2) → (3) → (1)",
+   "(3) → (2) → (1)"
+  ],
+  "answer": 2,
+  "option_explanations": [
+   "thesis 放在最前面，后面的背景句就失去了引入作用，However 前后的逻辑也会断开。",
+   "thesis 放在中间，(3) 的 However 就接在了 thesis 后面，逻辑混乱。",
+   "正确。(2) 是 hook（一般性陈述），(3) 用 However 引出问题背景，(1) 是 thesis，符合“引入→背景→论点”的顺序。",
+   "以 However 开头不合理，因为 However 前面需要有一个被转折的陈述。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "开头段一般按什么顺序写？哪一句最“一般”，哪一句表明立场？",
+   "Hook → 背景 → Thesis。注意 However 前面需要有一个被转折的内容。",
+   "This essay argues that... 应该放在哪里？"
+  ],
+  "explanation": "开头段的顺序通常是 Hook → 背景 → Thesis。(2) 是与话题相关的一般性陈述，作为 hook；(3) 用 However 转折，指出问题；(1) 用 This essay argues that... 表明立场，放在最后。"
+ },
+ {
+  "id": "introduction-03",
+  "kc": "introduction",
+  "format": "mcq",
+  "difficulty": 3,
+  "instruction": "选出改写（paraphrase）题目最好的背景句。",
+  "content": "Prompt: Some people think that museums should be free for everyone. Do you agree or disagree?",
+  "options": [
+   "Some people think that museums should be free for everyone.",
+   "There is an ongoing debate about whether members of the public should have to pay to enter museums.",
+   "Museums are buildings where people can see old and interesting objects.",
+   "Museums should be free, which is a good idea."
+  ],
+  "answer": 1,
+  "option_explanations": [
+   "照抄题目。雅思中照抄的部分不计入字数，也显示不出语言能力。",
+   "正确。用 ongoing debate、have to pay to enter 等不同的词和句式改写了题目，意思准确，并点出了争议。",
+   "这是博物馆的定义，没有涉及“是否免费”这个争议。",
+   "这是一个表达粗糙的观点，不是背景改写，而且 which is a good idea 很空泛。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "背景句要用自己的话说出题目在争论什么。",
+   "好的改写：意思不变，但词汇和句式改变。",
+   "排除照抄的、跑题的以及直接表态的选项。"
+  ],
+  "explanation": "背景句的作用是用自己的话改写题目，说明争议在哪里。照抄题目不计分；写定义则偏离了争议点。好的改写换了词和句式，但保留了原意：There is an ongoing debate about whether members of the public should have to pay to enter museums。"
+ },
+ {
+  "id": "introduction-04",
+  "kc": "introduction",
+  "format": "mcq",
+  "difficulty": 3,
+  "instruction": "阅读这个开头段，选出对其问题描述最准确的一项。",
+  "content": "Prompt: Has the internet done more good than harm?\n\nIntroduction: Nowadays, more and more people are using the internet. Every coin has two sides, and the internet has both advantages and disadvantages. For example, my cousin spends six hours a day playing online games, and his grades have fallen sharply. In addition, online shopping saves a lot of time. In my opinion, the internet is both good and bad.",
+  "options": [
+   "It is too short and needs more examples to support the writer's view.",
+   "It has a clear thesis, but its opening sentence is too specific to interest readers.",
+   "Its only problem is that it does not include any statistics about internet use.",
+   "It relies on clichés, includes a detailed example that belongs in a body paragraph, and ends without a clear position."
+  ],
+  "answer": 3,
+  "option_explanations": [
+   "开头段不需要更多例子。它已经把例子写进来了，这正是问题之一。",
+   "错误。最后一句 both good and bad 没有表态，不是清楚的 thesis；开头句是空泛的套话，而不是“太具体”。",
+   "开头段不必有数据，编造数据反而有害。而且这个段落的问题远不止这一点。",
+   "正确。Nowadays, more and more people... 和 Every coin has two sides 是套话；表哥打游戏的例子属于主体段；结尾的 both good and bad 没有回答 more good than harm。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "分别检查开头段的三个部分：第一句、中间部分、最后一句。",
+   "开头段要避免套话，不放详细例子，最后一句要明确回答题目。",
+   "题目问的是 more good than harm，最后一句回答了吗？表哥的例子应该放在哪里？"
+  ],
+  "explanation": "这个开头段有三个典型问题：(1) 套话开头（Nowadays, more and more people... / Every coin has two sides）；(2) 把详细例子（表哥打游戏）放进了开头段，例子应该放在主体段；(3) 最后一句 both good and bad 没有回答 more good than harm。改进示例：Few inventions have reshaped daily life as completely as the internet. ... I believe its benefits for education and communication far outweigh its harms."
+ },
+ {
+  "id": "introduction-05",
+  "kc": "introduction",
+  "format": "mcq",
+  "difficulty": 4,
+  "instruction": "选出最适合这道题目的 hook（第一句）。",
+  "content": "Prompt: Some people believe that children should be taught how to cook at school. Do you agree or disagree?",
+  "options": [
+   "As ready meals and food delivery apps replace home cooking, many teenagers now leave school unable to prepare even a simple, healthy dish.",
+   "Food is very important for human beings, and everyone needs to eat every day.",
+   "According to research, 99.7% of students hate cooking.",
+   "Since ancient times, people have cooked food over fire, and cooking has always been part of human culture."
+  ],
+  "answer": 0,
+  "option_explanations": [
+   "正确。它与题目直接相关（学校、烹饪、青少年），点出了一个具体现象，自然地引向“学校是否应该教烹饪”。",
+   "过于宽泛，适用于任何饮食话题，没有引出“学校教烹饪”的争议。",
+   "明显是编造的精确数据，会降低可信度。考试中不应该编造统计数字。",
+   "从远古历史讲起，离“学校是否应该教烹饪”太远。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "好的 hook 要与题目的具体焦点相关，而不只是与“食物”相关。",
+   "避免三种 hook：过于宽泛、编造数据、从远古讲起。",
+   "逐一检查：哪一句能自然地引出“学校是否应该教烹饪”这个争议？"
+  ],
+  "explanation": "有效的 hook 要具体、相关，并且能自然地引向题目的争议。“食物很重要”太宽泛；编造的 99.7% 不可信；“自古以来”离题太远。最佳选项描述了一个与学校和烹饪能力直接相关的现象：many teenagers now leave school unable to prepare even a simple, healthy dish。"
+ },
+ {
+  "id": "introduction-06",
+  "kc": "introduction",
+  "format": "mcq",
+  "difficulty": 4,
+  "instruction": "阅读这个开头段，选出最应该删除或移到主体段的句子。",
+  "content": "Prompt: Some people think that children should be given smartphones at a young age, while others think they should not. Discuss both views and give your own opinion.\n\n(1) In many countries, children are receiving their first smartphones at an ever younger age. (2) Some parents see the devices as essential for safety and learning, while others worry that they harm concentration and sleep. (3) Research shows that smartphones emit blue light, which can disrupt the body's production of melatonin and cause insomnia among teenagers who use their phones late at night. (4) This essay will consider both views before arguing that children under twelve should not have their own smartphones.",
+  "options": [
+   "Sentence (1)",
+   "Sentence (2)",
+   "Sentence (3)",
+   "Sentence (4)"
+  ],
+  "answer": 2,
+  "option_explanations": [
+   "(1) 是与话题直接相关的 hook，应该保留。",
+   "(2) 是改写题目的背景句，点出了两种观点，应该保留。",
+   "正确。(3) 是具体的科学证据和细节（蓝光、褪黑素），属于主体段的论证内容。放在开头段会显得冗长，功能也会混乱。",
+   "(4) 是 thesis，既预告了讨论两方，又表明了观点，必须保留。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "给每一句贴上标签：hook、背景、论据、thesis。",
+   "开头段只负责引入和表态。具体的论证和证据应该放在哪里？",
+   "哪一句删掉之后，hook、背景和 thesis 仍然完整，而且它的内容更适合用来论证某一方？"
+  ],
+  "explanation": "开头段的功能是 hook → 背景 → thesis，不负责展开论证。(3) 中的蓝光和褪黑素是支持“反对”观点的具体证据，应该移到相应的主体段。删去后，开头段由 (1)(2)(4) 组成，简洁且结构完整。"
+ },
+ {
+  "id": "introduction-07",
+  "kc": "introduction",
+  "format": "write",
+  "difficulty": 3,
+  "instruction": "为下面的题目写一个 hook（开头第一句）：要与话题直接相关，不使用套话，不编造精确数据。",
+  "content": "Prompt: Many people believe that cities should invest more in cycling lanes. To what extent do you agree or disagree?",
+  "options": [],
+  "answer": -1,
+  "option_explanations": [],
+  "sentences": [],
+  "accepted": [
+   "In many crowded cities, the bicycle is quietly becoming a serious alternative to the car.",
+   "As traffic jams and air pollution worsen in many cities, more commuters are looking for a cheaper and cleaner way to get to work."
+  ],
+  "criteria": "合格条件：(1) 只写一句；(2) 与城市交通、骑行、拥堵或污染等话题直接相关，而不是泛泛地谈“社会发展”；(3) 不使用万能套话，如 With the development of society / Every coin has two sides / Nowadays, more and more people...；(4) 不编造精确的统计数字（如 87.3%）；(5) 这一句不必给出完整立场；(6) 语法正确、表达自然。",
+  "hints": [
+   "想一想：这道题背后有什么真实的城市现象？",
+   "hook 要具体、与话题相关，避免套话和编造的数据。",
+   "可以从交通拥堵、空气污染或骑车通勤的趋势写起。"
+  ],
+  "explanation": "好的 hook 与题目话题直接相关，用一个具体的现象或趋势把读者带进话题，例如 As traffic jams and air pollution worsen in many cities, more commuters are looking for a cheaper and cleaner way to get to work。它不必表明立场，但要为后面的背景句和 thesis 做铺垫。"
+ },
+ {
+  "id": "introduction-08",
+  "kc": "introduction",
+  "format": "write",
+  "difficulty": 5,
+  "instruction": "为下面的题目写一个完整的开头段（3–4 句，50–80 词），包括 hook、改写题目的背景句和明确的 thesis。",
+  "content": "Prompt: Some people believe that the main purpose of school is to prepare students for work. Others think that school should help students develop as individuals. Discuss both views and give your own opinion.",
+  "options": [],
+  "answer": -1,
+  "option_explanations": [],
+  "sentences": [],
+  "accepted": [
+   "As competition in the job market grows fiercer, schools face increasing pressure to produce employable graduates. Some argue that education should focus mainly on practical skills for future careers, while others believe that its true purpose is to develop well-rounded individuals. This essay will examine both views before arguing that schools should prioritise personal development, since adaptable, curious people are ultimately better prepared for any job.",
+   "Few questions in education are as divisive as what schools are actually for. One side argues that schools exist mainly to equip students with the skills employers want, whereas the other insists that education should nurture each student's character and interests. While both aims matter, this essay will argue that personal development should come first, because it lays the foundation for success at work as well as in life."
+  ],
+  "criteria": "合格条件：(1) 3–4 句，约 50–80 词；(2) 第一句是与教育或学校目的相关的具体 hook，不使用套话；(3) 有背景句用自己的话改写两种观点（为就业做准备 vs. 个人发展），不照抄题目；(4) 最后有明确的 thesis，既表明会讨论两方，又给出自己的观点（可以是有条件的观点）；(5) 开头段里不展开详细论证或例子；(6) 语法基本正确。",
+  "hints": [
+   "先规划三部分：第一句写什么现象？第二句怎样改写两种观点？最后一句你的立场是什么？",
+   "背景句可以用 Some argue that ..., while others believe that ... 改写两种观点。thesis 要同时体现“讨论两方”和“我的观点”。",
+   "检查：有没有套话？有没有照抄题目？有没有把例子写进开头段？字数在 50–80 之间吗？"
+  ],
+  "explanation": "完整的开头段＝Hook（与话题相关的具体现象）＋背景（用自己的话改写两种观点）＋Thesis（预告讨论两方，并表明立场）。例如：As competition in the job market grows fiercer, schools face increasing pressure... / Some argue that..., while others believe that... / This essay will examine both views before arguing that.... 开头段不需要展开理由的细节，那是主体段的任务。"
+ },
+ {
+  "id": "conclusion-01",
+  "kc": "conclusion",
+  "format": "mcq",
+  "difficulty": 1,
+  "instruction": "下面四句来自一篇主张“继续资助公共图书馆”的作文的结尾段。哪一句不应该出现在结尾段？",
+  "content": "Essay thesis: Public libraries remain essential in the digital age because they offer free access to knowledge and a quiet place to study.",
+  "options": [
+   "In conclusion, public libraries are still vital, even in an age of smartphones and e-books.",
+   "Another reason is that libraries provide free air conditioning in summer.",
+   "They give everyone free access to knowledge and a quiet place to study.",
+   "Governments should therefore continue to fund them generously."
+  ],
+  "answer": 1,
+  "option_explanations": [
+   "换了说法重申立场，是结尾段标准的第一句。",
+   "正确，这句不应该出现。Another reason 引入了正文没有讨论过的新论据，结尾段不能引入新论点。",
+   "简要概括了正文的两个主要理由，适合放在结尾。",
+   "给出了建议性的升华，与立场一致，适合放在结尾。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "结尾段有三个功能：重申、总结、升华。",
+   "结尾段不能做什么？",
+   "注意哪一句的开头词暗示“还有一个新理由”。"
+  ],
+  "explanation": "结尾段负责重申立场、总结理由、升华意义，不能引入新论据。Another reason is that... 明显是一个新论点：如果这个理由重要，就应该在主体段展开；如果不重要，就删掉。"
+ },
+ {
+  "id": "conclusion-02",
+  "kc": "conclusion",
+  "format": "mcq",
+  "difficulty": 2,
+  "instruction": "一篇作文的 thesis 如下。选出最适合作为结尾段第一句的重申。",
+  "content": "Thesis: I believe that schools should teach first aid to all students, because it saves lives and builds confidence.",
+  "options": [
+   "In conclusion, I believe that schools should teach first aid to all students, because it saves lives and builds confidence.",
+   "In conclusion, first aid is useful, but it may not be necessary for schools to teach it.",
+   "In conclusion, first aid training deserves a place in every school's curriculum, since it can save lives and give young people confidence in an emergency.",
+   "In conclusion, hospitals should train more doctors and nurses."
+  ],
+  "answer": 2,
+  "option_explanations": [
+   "逐字照抄 thesis，显得重复，也浪费了展示语言能力的机会。",
+   "立场被弱化甚至改变了（may not be necessary），与 thesis 不一致。",
+   "正确。用不同的词和句式（deserves a place in ... curriculum, give young people confidence）重申了相同的立场和理由。",
+   "转到了医院培训医生，与 thesis 无关。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "重申 thesis 时，什么要变，什么不能变？",
+   "立场和理由不变，但措辞要换。",
+   "排除照抄的、改变立场的和跑题的选项。"
+  ],
+  "explanation": "结尾重申 thesis 的原则是：立场不变，理由不变，措辞要变。照抄原句显得重复；弱化立场会造成前后矛盾。好的重申示例：first aid training deserves a place in every school's curriculum, since it can save lives and give young people confidence in an emergency。"
+ },
+ {
+  "id": "conclusion-03",
+  "kc": "conclusion",
+  "format": "mcq",
+  "difficulty": 3,
+  "instruction": "阅读这个结尾段，选出它最主要的问题。",
+  "content": "Essay thesis: Governments should tax sugary drinks, because this would reduce obesity and raise money for healthcare.\n\nConclusion: In conclusion, a tax on sugary drinks would help reduce obesity and raise money for healthcare. Moreover, sugary drinks damage teeth, and dentists in many countries have reported a rise in tooth decay among children. Therefore, governments should introduce this tax as soon as possible.",
+  "options": [
+   "It introduces a new argument and new evidence that were not discussed in the body of the essay.",
+   "It changes its position from the one stated in the thesis.",
+   "It does not begin with a conclusion signal phrase.",
+   "It does not restate the thesis."
+  ],
+  "answer": 0,
+  "option_explanations": [
+   "正确。Moreover, sugary drinks damage teeth 和牙医的报告都是新论据、新证据，正文没有出现过，不应该在结尾段第一次提出。",
+   "立场没有变，结尾仍然支持征税。",
+   "它以 In conclusion 开头，有信号词。",
+   "第一句已经重申了 thesis 和两个理由。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "对照 thesis 中的两个理由，看结尾有没有多出来的内容。",
+   "结尾段可以总结已有的理由，但不能做什么？",
+   "Moreover 后面的内容在 thesis 中出现过吗？"
+  ],
+  "explanation": "结尾段只总结正文讨论过的理由，不引入新论据。thesis 的理由是 reduce obesity 和 raise money for healthcare，而结尾的 Moreover, sugary drinks damage teeth... 是全新的论点，还附带了新证据。如果牙齿健康是重要理由，就应该在 thesis 中预告，并在主体段展开。"
+ },
+ {
+  "id": "conclusion-04",
+  "kc": "conclusion",
+  "format": "mcq",
+  "difficulty": 3,
+  "instruction": "一篇作文主张城市应该增加绿地，理由是改善心理健康和为城市降温。选出最适合作为结尾段最后一句（升华）的句子。",
+  "content": "Conclusion so far: In conclusion, cities should create more parks and green spaces. These areas not only improve residents' mental health but also help to keep cities cool during increasingly hot summers.",
+  "options": [
+   "Green spaces also attract tourists, which is a third major benefit.",
+   "However, some people say that green spaces are a waste of valuable land, and they may be right.",
+   "Parks are green and have many trees.",
+   "If city planners act now, the cities of the future could become greener, cooler and healthier places to live."
+  ],
+  "answer": 3,
+  "option_explanations": [
+   "引入了新理由（吸引游客），结尾段不应该出现新论据。",
+   "结尾突然承认对方“可能是对的”，削弱了全文的立场。",
+   "空洞、幼稚，没有提升文章的意义。",
+   "正确。从具体理由提升到对未来城市的展望，并暗含对规划者的建议，没有新论据，立场一致。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "升华句的作用是增加新理由，还是提升意义？",
+   "升华可以是建议、展望或更广泛的意义，但不能削弱立场，也不能引入新论据。",
+   "哪一句在谈“未来”和“意义”，而不是新的事实？"
+  ],
+  "explanation": "结尾的最后一句可以“升华”：提出建议、展望未来或指出更广泛的意义。If city planners act now, the cities of the future could become greener, cooler and healthier places to live 就是典型的展望式升华。引入新理由（游客）、削弱立场（they may be right）或说空话（Parks are green）都不合适。"
+ },
+ {
+  "id": "conclusion-05",
+  "kc": "conclusion",
+  "format": "mcq",
+  "difficulty": 4,
+  "instruction": "阅读 thesis 和结尾段，选出结尾段最主要的问题。",
+  "content": "Thesis: Working from home benefits both employees and employers, so companies should allow it for most office jobs.\n\nConclusion: To sum up, working from home saves employees hours of commuting and reduces companies' office costs. However, nothing can replace face-to-face communication, so in my view employees should return to the office full-time.",
+  "options": [
+   "It is too short to be a conclusion.",
+   "It summarises the main reasons too briefly.",
+   "Its final sentence contradicts the position taken in the thesis.",
+   "It uses 'To sum up' instead of 'In conclusion'."
+  ],
+  "answer": 2,
+  "option_explanations": [
+   "两句话的结尾段在长度上可以接受，长度不是主要问题。",
+   "概括简洁正是结尾段应有的特点，不是问题。",
+   "正确。thesis 主张允许居家办公，结尾却主张全员回办公室，立场前后矛盾，这是最严重的问题。同时它还引入了新论点（面对面交流）。",
+   "To sum up 和 In conclusion 都是合格的结尾信号词。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "先对比 thesis 的立场和结尾最后一句的立场。",
+   "全文立场必须一致，结尾不能推翻开头。",
+   "However 后面的观点和 thesis 是同一个方向吗？"
+  ],
+  "explanation": "结尾段最严重的错误之一是立场漂移甚至反转。thesis 主张 companies should allow it for most office jobs，结尾却变成了 employees should return to the office full-time，读者无法判断作者到底支持什么，Task Response 和 Coherence 都会受影响。另外，“面对面交流无可替代”也是正文没有讨论过的新论点。"
+ },
+ {
+  "id": "conclusion-06",
+  "kc": "conclusion",
+  "format": "mcq",
+  "difficulty": 5,
+  "instruction": "根据题目和 thesis，选出最好的结尾段。",
+  "content": "Prompt: Some people think that space exploration is a waste of money, while others believe it is essential. Discuss both views and give your own opinion.\n\nThesis: Although critics argue that the money would be better spent on problems on Earth, I believe space research is a worthwhile investment, because it drives technological innovation and helps us monitor climate change.",
+  "options": [
+   "In conclusion, space exploration has both advantages and disadvantages, and people have different opinions about it.",
+   "In conclusion, while concerns about cost are understandable, space programmes contribute so much to new technologies and to climate research that they remain a sound investment. Rather than cutting these budgets, governments should ensure that discoveries made in space are used to solve problems on Earth.",
+   "In conclusion, space exploration is essential. In addition, it could one day allow humans to live on Mars, which would protect our species from extinction.",
+   "In conclusion, although critics argue that the money would be better spent on problems on Earth, I believe space research is a worthwhile investment, because it drives technological innovation and helps us monitor climate change."
+  ],
+  "answer": 1,
+  "option_explanations": [
+   "立场消失，变成了“有利有弊、看法不同”，与 thesis 不一致，也没有完成 give your own opinion。",
+   "正确。它换了说法重申立场（a sound investment），承认了对方的观点（concerns about cost），概括了两个理由（new technologies, climate research），最后以建议升华，还巧妙回应了反方对地球问题的担忧。",
+   "In addition 引入了全新的论点（移民火星），正文没有讨论过。",
+   "逐字照抄 thesis，没有改写，也没有升华。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "用结尾段的三项标准逐一检查：换说法重申、总结理由、升华。",
+   "再检查两个“禁区”：新论据和照抄。",
+   "哪个选项既保留了立场和两个理由，又没有照抄、没有新论点？"
+  ],
+  "explanation": "最好的结尾＝换说法重申立场＋概括已有理由＋升华（建议或意义），并且不引入新论据、不照抄。正确选项用 a sound investment 改写 worthwhile investment，用 new technologies and climate research 概括两个理由，最后建议 governments should ensure that discoveries made in space are used to solve problems on Earth，既升华了意义，又回应了反方观点。"
+ },
+ {
+  "id": "conclusion-07",
+  "kc": "conclusion",
+  "format": "write",
+  "difficulty": 3,
+  "instruction": "把下面的 thesis 改写成结尾段的第一句：立场和理由不变，但必须换一种说法，不能照抄。",
+  "content": "Thesis: I strongly believe that the government should make public transport free for students, because it would reduce traffic and help low-income families.",
+  "options": [],
+  "answer": -1,
+  "option_explanations": [],
+  "sentences": [],
+  "accepted": [
+   "In conclusion, offering students free bus and subway travel would be a wise policy, as it would ease congestion and lighten the financial burden on poorer households.",
+   "To sum up, free public transport for students deserves government support, since it would take cars off the road and make life easier for families on low incomes."
+  ],
+  "criteria": "合格条件：(1) 立场与原 thesis 一致（支持学生免费乘坐公共交通），不能弱化或改变；(2) 保留或概括两个理由（减少交通拥堵、帮助低收入家庭）；(3) 措辞或句式有明显变化，不是逐字照抄，也不是只替换一两个词；(4) 不引入新理由；(5) 建议使用 In conclusion / To sum up / Overall 等信号词（非强制）；(6) 语法正确。",
+  "hints": [
+   "先找出 thesis 的立场和两个理由。",
+   "重申时，立场和理由不变，词汇和句式要变。",
+   "可以试着用名词短语开头（如 Free public transport for students ...），或者给 reduce traffic、low-income families 找同义表达。"
+  ],
+  "explanation": "重申 thesis 不是复制粘贴。你可以换主语（free public transport for students deserves...），换动词（用 ease congestion 代替 reduce traffic），换名词短语（用 families on low incomes 代替 low-income families），但立场和理由保持不变，也不添加新理由。"
+ },
+ {
+  "id": "conclusion-08",
+  "kc": "conclusion",
+  "format": "write",
+  "difficulty": 5,
+  "instruction": "根据下面的作文信息，写一个完整的结尾段（3 句左右，40–80 词）：换说法重申立场，总结两个理由，最后升华。不要引入新论据。",
+  "content": "Prompt: Should companies allow employees to work a four-day week?\n\nThesis: Companies should adopt a four-day working week, because it improves employees' well-being and can increase productivity.\nBody 1: A shorter week reduces stress and burnout.\nBody 2: Well-rested employees work more efficiently, so output can stay the same or even rise.",
+  "options": [],
+  "answer": -1,
+  "option_explanations": [],
+  "sentences": [],
+  "accepted": [
+   "In conclusion, a four-day working week would benefit both workers and their employers. By reducing stress and burnout, it would allow people to return to work refreshed and focused, so they could achieve as much in four days as they once did in five. Companies that are willing to trial this change may well find that a happier workforce is also a more productive one.",
+   "To sum up, companies have good reason to move to a four-day working week. Giving staff an extra day to rest protects them from stress and burnout, and rested employees tend to work more efficiently, so productivity need not fall. Businesses that try this model may discover that caring for their workers and caring for their profits are not opposing goals."
+  ],
+  "criteria": "合格条件：(1) 40–80 词，约 2–4 句；(2) 用不同措辞重申支持四天工作制的立场，与 thesis 一致；(3) 概括两个理由：员工身心健康（减少压力和倦怠）以及效率或产出；(4) 有一句升华（建议、展望或更广泛的意义）；(5) 不引入新论据或新例子，例如“节约用电”“减少通勤污染”等正文没有提到的理由一律不合格；(6) 不逐字照抄 thesis；(7) 语法基本正确。",
+  "hints": [
+   "先列出你需要的三个部分：重申、总结、升华。",
+   "总结部分只能用 Body 1 和 Body 2 已有的理由；升华可以是展望或建议。",
+   "写完后检查：有没有哪一句提到了正文中没有出现过的好处？"
+  ],
+  "explanation": "结尾段＝换说法重申（a four-day working week would benefit both workers and their employers）＋概括理由（reducing stress and burnout; achieve as much in four days）＋升华（a happier workforce is also a more productive one）。最常见的扣分点是在结尾加入新的好处，如“节约能源”“减少通勤污染”，这些都是正文没有讨论过的。"
+ },
+ {
+  "id": "organization-01",
+  "kc": "organization",
+  "format": "order",
+  "difficulty": 1,
+  "instruction": "下面是一篇议论文各段的主题句，请按正确的篇章顺序排列。",
+  "content": "",
+  "options": [],
+  "answer": -1,
+  "option_explanations": [],
+  "sentences": [
+   "Although some parents worry that young children are already overloaded, I believe coding should be taught in all primary schools.",
+   "The first reason is that coding teaches children to break big problems into smaller, manageable steps.",
+   "Another reason is that early exposure to coding prepares children for a job market increasingly shaped by technology.",
+   "In conclusion, teaching coding early gives children both a powerful way of thinking and a head start in their future careers."
+  ],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "先找出表明立场的开头段句子和总结全文的结尾句。",
+   "主体段之间看信号词：The first reason 和 Another reason。",
+   "带有 I believe、预告全文立场的句子应该放在哪里？表示“第一”和“另一个”的词谁先谁后？"
+  ],
+  "explanation": "议论文的结构是：开头段（thesis：I believe coding should be taught...）→ 主体段 1（The first reason...）→ 主体段 2（Another reason...）→ 结尾段（In conclusion...）。信号词 The first、Another、In conclusion 决定了唯一的顺序。"
+ },
+ {
+  "id": "organization-02",
+  "kc": "organization",
+  "format": "order",
+  "difficulty": 3,
+  "instruction": "下面是一篇 discuss both views 作文各段的主题句，请按正确顺序排列。",
+  "content": "",
+  "options": [],
+  "answer": -1,
+  "option_explanations": [],
+  "sentences": [
+   "People disagree about whether university education should be free; this essay will examine both views before explaining why I support free tuition.",
+   "On the one hand, opponents of free tuition argue that taxpayers should not have to pay for degrees that mainly benefit the graduates themselves.",
+   "On the other hand, supporters claim that free university education allows talented students from poor families to reach their full potential.",
+   "In my view, the second argument is more convincing, because a society gains far more from developing all its talent than it spends on tuition.",
+   "In conclusion, although the cost to taxpayers is a fair concern, free university education is a worthwhile investment in a fairer society."
+  ],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "先找出开头段（预告全文）和结尾段。",
+   "On the one hand 和 On the other hand 是一对，顺序固定。",
+   "“the second argument”指的是哪一段的观点？它必须出现在两种观点都介绍完之后。"
+  ],
+  "explanation": "Discuss both views 作文的常见结构是：开头（预告＋立场）→ 观点一（On the one hand）→ 观点二（On the other hand）→ 作者评价（In my view, the second argument is more convincing）→ 结尾（In conclusion）。the second argument 只有在两种观点都出现之后才能使用。"
+ },
+ {
+  "id": "organization-03",
+  "kc": "organization",
+  "format": "order",
+  "difficulty": 4,
+  "instruction": "下面是一篇“原因—解决办法”作文各段的主题句，请按正确顺序排列。",
+  "content": "",
+  "options": [],
+  "answer": -1,
+  "option_explanations": [],
+  "sentences": [
+   "Obesity rates among children have risen sharply in many countries, and schools and governments must act together to reverse this trend.",
+   "The main cause of this problem is that children now spend much of their free time on screens rather than playing outside.",
+   "A further cause is the easy availability of cheap, high-calorie snacks.",
+   "To tackle the first of these causes, schools could make daily outdoor exercise compulsory.",
+   "The second cause, unhealthy snacks, could be addressed by taxing sugary products and limiting advertising aimed at children.",
+   "In conclusion, childhood obesity is largely the result of inactive lifestyles and unhealthy snacks, and only a combination of school and government action can solve it."
+  ],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "先确定开头段和结尾段，再看中间哪些句子是原因，哪些是解决办法。",
+   "原因要先于解决办法出现，因为解决办法会回指原因。",
+   "注意两组信号：The main cause / A further cause，以及 the first of these causes / The second cause。"
+  ],
+  "explanation": "原因—解决办法作文的顺序是：开头（问题＋立场）→ 原因 1（The main cause）→ 原因 2（A further cause）→ 解决办法 1（To tackle the first of these causes）→ 解决办法 2（The second cause, unhealthy snacks, could be addressed...）→ 结尾。解决办法句中的 these causes 回指前文，所以原因必须放在前面；解决办法的顺序与原因的顺序一一对应。"
+ },
+ {
+  "id": "organization-04",
+  "kc": "organization",
+  "format": "order",
+  "difficulty": 5,
+  "instruction": "下面是一篇观点题作文各段的主题句（含一个让步反驳段），请按正确顺序排列。",
+  "content": "",
+  "options": [],
+  "answer": -1,
+  "option_explanations": [],
+  "sentences": [
+   "Although some people argue that zoos are cruel, I believe that well-run zoos play a valuable role in modern society.",
+   "The most obvious benefit of zoos is that they protect endangered species through breeding programmes.",
+   "Beyond conservation, zoos also educate the public, especially children, about wildlife and the threats it faces.",
+   "Critics argue that, despite these benefits, keeping wild animals in captivity is cruel; however, this objection applies mainly to poorly run zoos.",
+   "In conclusion, despite legitimate concerns about animal welfare, zoos that put conservation and education first deserve our support."
+  ],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "先找出 thesis 和 In conclusion。",
+   "中间三段里，两段写好处，一段反驳批评。注意回指词 these benefits 和 Beyond conservation。",
+   "“these benefits”要求前面已经出现过好处；“Beyond conservation”要求前面已经谈过保护物种。"
+  ],
+  "explanation": "本文的结构是：thesis → 好处 1（保护濒危物种）→ 好处 2（Beyond conservation，教育公众）→ 让步反驳段（despite these benefits... however...）→ 结尾。Beyond conservation 回指“保护濒危物种”，所以必须放在它后面；these benefits 回指前两段的好处，所以让步段放在两个好处之后。"
+ },
+ {
+  "id": "organization-05",
+  "kc": "organization",
+  "format": "mcq",
+  "difficulty": 2,
+  "instruction": "选出最适合下面这道题的篇章结构。",
+  "content": "Prompt: Some people think that teenagers should have part-time jobs, while others think they should focus only on their studies. Discuss both views and give your own opinion.",
+  "options": [
+   "Body 1 → Body 2 → Introduction → Conclusion",
+   "Introduction → Conclusion → Body 1 → Body 2",
+   "Introduction (with thesis) → Body 1: the case for part-time jobs → Body 2: the case for focusing on studies, with the writer's view → Conclusion",
+   "One long introduction containing all the arguments and examples → Conclusion"
+  ],
+  "answer": 2,
+  "option_explanations": [
+   "开头段必须放在最前面，先让读者知道话题和立场。",
+   "结尾段放在主体段之前，读者在看到论证之前就看到了总结，逻辑颠倒。",
+   "正确。开头给出 thesis，两个主体段分别讨论两种观点（第二段表明作者的倾向），最后是结尾。",
+   "没有分段，开头段承担了主体段的功能，结构混乱。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "议论文的三大部分是什么？各自放在什么位置？",
+   "discuss both views 题的两种观点应该各占一个主体段。",
+   "找出“开头—主体—结尾”顺序正确、每段功能清楚的选项。"
+  ],
+  "explanation": "标准结构是：开头段（引入＋thesis）→ 主体段（每段一个中心：观点一；观点二＋作者看法）→ 结尾段。把论证都挤进开头，或者把结尾放在中间，读者都很难跟上作者的思路。"
+ },
+ {
+  "id": "organization-06",
+  "kc": "organization",
+  "format": "mcq",
+  "difficulty": 3,
+  "instruction": "阅读下面的主体段，选出它在分段上的主要问题。",
+  "content": "(1) One major benefit of learning a musical instrument is that it improves children's concentration. (2) Practising a piece of music requires students to focus on a single task for a long period. (3) Many teachers report that pupils who play an instrument are more attentive in class. (4) However, music lessons can be expensive, and many families cannot afford them. (5) Therefore, governments should provide free instruments to children from poor families.",
+  "options": [
+   "Sentence (1) should be moved to the end of the paragraph.",
+   "Sentences (4) and (5) change the topic to cost and government support, so they should be moved to a separate paragraph or cut.",
+   "Sentence (3) should be deleted, because examples are not allowed in body paragraphs.",
+   "The paragraph is well organised and needs no changes."
+  ],
+  "answer": 1,
+  "option_explanations": [
+   "(1) 是主题句，放在段首能让读者立刻知道本段的中心，不应该移到段尾。",
+   "正确。本段的中心是“提高专注力”，(4)(5) 却转向了费用和政府资助，这是另一个话题，应该另起一段或删去。",
+   "主体段完全可以有例子和证据，(3) 正是在支持主题句。",
+   "错误。这一段出现了两个中心，违反了“一段一个中心”的原则。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "先找出这一段的主题句，确定本段的中心。",
+   "一段只讲一个中心，换了中心就要换段。",
+   "从哪一句开始，内容不再是“专注力”了？"
+  ],
+  "explanation": "分段原则是一段一个中心。本段的主题句是 learning an instrument improves children's concentration，(2)(3) 都在支持它。但 (4)(5) 转向了费用和政府资助，是一个新的中心，应该另起一段（如果与题目相关）或删去。"
+ },
+ {
+  "id": "organization-07",
+  "kc": "organization",
+  "format": "mcq",
+  "difficulty": 3,
+  "instruction": "阅读 thesis 和两个主体段的主题句，选出最好的修改建议。",
+  "content": "Thesis: Cities should invest in bicycle lanes, because they reduce traffic congestion and improve residents' health.\n\nBody 1 topic sentence: Regular cycling is good for both the body and the mind.\nBody 2 topic sentence: Safe bicycle lanes encourage people to leave their cars at home, which takes traffic off the roads.",
+  "options": [
+   "Swap the two body paragraphs so that their order matches the order of reasons in the thesis.",
+   "Add a third body paragraph about the history of the bicycle.",
+   "Move both body paragraphs into the introduction.",
+   "Delete Body 2, because one reason is enough."
+  ],
+  "answer": 0,
+  "option_explanations": [
+   "正确。thesis 先说 reduce traffic congestion，再说 improve health，主体段应该按相同的顺序展开，读者才能顺着“路线图”阅读。",
+   "自行车的历史与 thesis 无关，增加这一段会跑题。",
+   "主体段的论证不应该放进开头段，那样会让开头段的功能混乱。",
+   "删去 Body 2，thesis 预告的第一个理由就没有得到论证。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "对照 thesis 中理由出现的顺序。",
+   "thesis 是全文的路线图，主体段的顺序应该与它一致。",
+   "thesis 先提的是哪个理由？Body 1 写的是哪个理由？"
+  ],
+  "explanation": "thesis 预告了理由的顺序（先 congestion，后 health），主体段应该按同样的顺序展开。现在顺序颠倒了，读者需要来回对照。最简单的修改是交换两段（或者调整 thesis 中理由的顺序），使两者一致。"
+ },
+ {
+  "id": "organization-08",
+  "kc": "organization",
+  "format": "mcq",
+  "difficulty": 4,
+  "instruction": "阅读下面的作文提纲，选出最主要的结构问题。",
+  "content": "Prompt: Should governments ban single-use plastic bags?\n\nThesis: Governments should ban single-use plastic bags, because they pollute the oceans and cheap alternatives already exist.\nBody 1: Plastic bags that end up in the sea can strangle turtles and other marine animals.\nBody 2: Plastic waste that reaches the ocean breaks into tiny pieces, which fish and seabirds then swallow.\nBody 3: Reusable cloth bags are cheap and already sold in almost every supermarket.",
+  "options": [
+   "Body 3 is irrelevant, because the thesis does not mention alternatives.",
+   "The essay needs an extra paragraph about the history of plastic.",
+   "The body paragraphs should be placed before the thesis.",
+   "Body 1 and Body 2 both develop the same reason (ocean pollution harming sea life), so they should be merged into one paragraph."
+  ],
+  "answer": 3,
+  "option_explanations": [
+   "错误。thesis 明确提到了 cheap alternatives already exist，Body 3 正是在论证这个理由。",
+   "塑料的历史与“是否应该禁用”无关，增加这一段会跑题。",
+   "thesis 在开头段，主体段放在它后面才符合议论文结构。",
+   "正确。Body 1 和 Body 2 都在论证“污染海洋、伤害海洋生物”这一个理由，只是例子不同，应该合并成一段，用两个例子支撑同一个中心。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "thesis 预告了几个理由？主体段有几段？",
+   "每个主体段应该讲一个不同的中心，两段讲同一件事就是重复。",
+   "比较 Body 1 和 Body 2：它们支撑的是 thesis 中的同一个理由吗？"
+  ],
+  "explanation": "thesis 预告了两个理由（污染海洋、已有便宜的替代品），提纲却有三个主体段，其中 Body 1 和 Body 2 都属于“海洋污染伤害海洋生物”，只是例子不同（海龟被缠住 vs. 鱼和海鸟误食碎片）。应该把它们合并成一段，让两个例子共同支撑一个中心，这样每段的功能才清楚、不重复。"
+ },
+ {
+  "id": "planning-01",
+  "kc": "planning",
+  "format": "mcq",
+  "difficulty": 1,
+  "instruction": "雅思大作文（Task 2）建议用时约 40 分钟。动笔前列提纲，一般建议用多少时间？",
+  "content": "You should spend about 40 minutes on an IELTS Task 2 essay of at least 250 words.",
+  "options": [
+   "No time at all — start writing immediately to save time.",
+   "About 20 minutes, so that the outline is perfect.",
+   "About 5 minutes, to note the thesis and the main point of each paragraph.",
+   "Only after finishing the essay, to check what you have written."
+  ],
+  "answer": 2,
+  "option_explanations": [
+   "跳过提纲，容易写到一半没话说、跑题或结构混乱，反而浪费时间。",
+   "20 分钟太长，后面会没有足够的时间写完和检查。",
+   "正确。大约 5 分钟足够读题、写 thesis 和每段要点，又能留出足够的时间写作和检查。",
+   "提纲的作用是在动笔前做规划，写完后再列提纲无法帮你组织文章。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "提纲应该在什么时候写？",
+   "提纲既要有用，又不能挤占写作时间。",
+   "40 分钟里，写作和检查需要占大部分时间。"
+  ],
+  "explanation": "雅思大作文建议用大约 5 分钟列提纲：读题、判断题型、写 thesis、列出每段要点。不列提纲容易跑题或中途卡住；提纲花太久又会写不完。5 分钟的规划通常能为后面节省更多时间。"
+ },
+ {
+  "id": "planning-02",
+  "kc": "planning",
+  "format": "mcq",
+  "difficulty": 2,
+  "instruction": "一份好的考场提纲应该包括什么？",
+  "content": "Prompt: Some people believe that all public museums should be free. Do you agree or disagree?",
+  "options": [
+   "Every sentence of the essay written out in full.",
+   "A thesis and the main point of each body paragraph, with a few key words for support.",
+   "Only a list of advanced vocabulary to use in the essay.",
+   "Only the introduction, because the rest can be improvised."
+  ],
+  "answer": 1,
+  "option_explanations": [
+   "写出全部句子相当于把作文写两遍，考场上时间不够。",
+   "正确。提纲只需要 thesis、每段的中心和支撑关键词，用短语即可。",
+   "只有词汇、没有观点和结构，无法帮你组织文章。",
+   "只规划开头，主体段仍然可能跑题或重复。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "提纲的目的是规划“说什么”和“按什么顺序说”。",
+   "一份够用的提纲至少要覆盖开头的 thesis 和每个主体段。",
+   "找出既包含立场、又覆盖每一段、而且不浪费时间的选项。"
+  ],
+  "explanation": "考场提纲＝thesis（立场＋理由）＋每个主体段的中心论点＋1–2 个支撑关键词（解释或例子）。用英文短语即可，例如：Thesis: agree → education + equality. B1: free entry → more students visit. B2: low-income families → equal access to culture."
+ },
+ {
+  "id": "planning-03",
+  "kc": "planning",
+  "format": "mcq",
+  "difficulty": 3,
+  "instruction": "题目：Should children be allowed to use smartphones at school? 下面四份提纲的 thesis 都是“不应该”。哪一份的两个主体段内容重复？",
+  "content": "Thesis: Children should not be allowed to use smartphones at school.",
+  "options": [
+   "Body 1: phones distract students in class; Body 2: phones make cyberbullying easier.",
+   "Body 1: phones distract students in class; Body 2: phones reduce face-to-face interaction at break time.",
+   "Body 1: phones distract students in class; Body 2: expensive phones can be lost or stolen at school.",
+   "Body 1: phones distract students in class; Body 2: students pay less attention to their teachers because of their phones."
+  ],
+  "answer": 3,
+  "option_explanations": [
+   "两段分别讲课堂分心和网络欺凌，是两个不同的理由，不重复。",
+   "课堂分心和课间社交减少，场景和影响都不同，不重复。",
+   "课堂分心和财物安全是两个不同的理由，不重复。",
+   "正确。“上课分心”和“因为手机不听老师讲课”本质上是同一个理由，只是换了说法，两段会互相重复。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "逐份比较：两个主体段讲的是不是同一件事？",
+   "两个论点如果只是换了说法，就会重复。",
+   "把每份提纲的两个论点用中文各说一遍，哪一份说出来几乎是同一句话？"
+  ],
+  "explanation": "列提纲时要检查论点是否重叠。distract students in class 和 pay less attention to their teachers 只是同一个理由的两种说法，写成两段的话，第二段要么无话可说，要么重复第一段。好的第二个论点应该来自不同角度，例如网络欺凌、社交减少或财物安全。"
+ },
+ {
+  "id": "planning-04",
+  "kc": "planning",
+  "format": "mcq",
+  "difficulty": 3,
+  "instruction": "阅读下面的提纲，选出它最主要的问题。",
+  "content": "Prompt: Should governments spend more money on public libraries?\n\nThesis: Yes — libraries are essential for education and community life.\nBody 1: Libraries give everyone free access to books and the internet.\nBody 2: Shanghai Library.",
+  "options": [
+   "Body 2 is just an example, not a main point; it should support a reason rather than stand alone as a paragraph.",
+   "The thesis is too specific.",
+   "An outline should never include examples.",
+   "Body 1 is off-topic."
+  ],
+  "answer": 0,
+  "option_explanations": [
+   "正确。Shanghai Library 只是一个例子，不是论点，不能单独撑起一段；而且 thesis 预告的 community life 没有对应的主体段。应该把它作为 Body 1 或新的 Body 2（如 community life）的支撑例子。",
+   "thesis 有立场、有两个理由，具体程度合适。",
+   "提纲可以包含例子的关键词，但例子应该放在论点下面，用来支撑论点。",
+   "Body 1（免费获取书籍和网络）直接支撑 education 这个理由，是切题的。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "检查每个主体段：它是一个“理由”，还是一个“例子”？",
+   "提纲中的各点要处于同一层级：每个主体段都应该是一个理由，例子放在理由下面。",
+   "thesis 中的 community life 在哪一段得到了论证？"
+  ],
+  "explanation": "提纲中的各点应该处于同一层级。Body 1 是理由，Body 2 却只是一个例子（Shanghai Library），无法独立成段；同时 thesis 中的 community life 没有被规划进去。修改示例：Body 2: libraries bring the community together — e.g. free classes and events for local residents。"
+ },
+ {
+  "id": "planning-05",
+  "kc": "planning",
+  "format": "mcq",
+  "difficulty": 4,
+  "instruction": "选出最完整、最合理的提纲。",
+  "content": "Prompt: In many countries, fewer young people are reading books for pleasure. What are the reasons for this? What can be done to encourage them to read more?",
+  "options": [
+   "Thesis: reading is important. Body 1: the benefits of reading. Body 2: famous writers young people should know.",
+   "Body 1: social media; Body 2: heavy homework; Body 3: video games.",
+   "Thesis: screens and busy schedules are mainly to blame, but schools and parents can help. Body 1 (reasons): social media and short videos compete for attention; heavy homework leaves little free time. Body 2 (solutions): free-choice reading time at school; parents reading at home as role models.",
+   "Body 1 (solution): build more libraries; Body 2 (solution): give students e-readers."
+  ],
+  "answer": 2,
+  "option_explanations": [
+   "跑题：题目问的是原因和措施，不是阅读的好处或作家介绍。",
+   "只回答了第一问（原因），没有 thesis，也没有措施。",
+   "正确。有 thesis，Body 1 回答原因，Body 2 回答措施，措施也能回应前面的原因，两问都得到了完整的回答。",
+   "只回答了第二问（措施），缺少原因和 thesis。"
+  ],
+  "sentences": [],
+  "accepted": [],
+  "criteria": "",
+  "hints": [
+   "这是一道两问题，数一数需要回答几个问题。",
+   "好的提纲要有 thesis，并且为每一问都规划内容。",
+   "找出同时包含 thesis、原因和措施的提纲。"
+  ],
+  "explanation": "两问题题型的提纲必须覆盖两问：原因（为什么读书的年轻人少了）和措施（可以做些什么）。最好让措施能回应前面提到的原因，例如针对“屏幕抢走注意力”，提出学校设立自由阅读时间。只写一问，或者写成“阅读的好处”，都是在提纲阶段就埋下了跑题隐患。"
+ },
+ {
+  "id": "planning-06",
+  "kc": "planning",
+  "format": "write",
+  "difficulty": 3,
+  "instruction": "为下面的题目写一份考场提纲（用英文关键词或短语即可）：包括 thesis 和两个主体段的中心论点，每个论点附 1–2 个支撑关键词。",
+  "content": "Prompt: Some people believe that online learning is as effective as classroom learning. To what extent do you agree or disagree?",
+  "options": [],
+  "answer": -1,
+  "option_explanations": [],
+  "sentences": [],
+  "accepted": [
+   "Thesis: partly agree — online learning works well for self-motivated adults, but not for most children.\nBody 1: adults — flexible schedules, strong self-discipline; e.g. online professional courses\nBody 2: children — need supervision and face-to-face interaction; e.g. short attention spans in online lessons\nConclusion: effectiveness depends on the learner's age and motivation",
+   "Thesis: disagree — classroom learning is still more effective.\nBody 1: instant feedback — teachers notice confusion and explain at once\nBody 2: discipline and motivation — classmates and fixed timetables keep students focused; fewer distractions than at home\nConclusion: online learning is a useful supplement, not a replacement"
+  ],
+  "criteria": "合格条件：(1) 有一句 thesis，明确表明同意程度（agree / disagree / partly agree）；(2) 两个主体段的中心论点都直接支持 thesis，并围绕“在线学习 vs. 课堂学习的效果”，而不是泛谈科技；(3) 两个论点不重复，处于同一层级（都是理由，而不是一个理由加一个例子）；(4) 每个论点至少有一个支撑关键词（解释或例子）；(5) 可以用短语或笔记形式，用英文书写，不要求完整句子。",
+  "hints": [
+   "先决定你的立场：同意、不同意，还是部分同意？",
+   "每个主体段写一个支持立场的理由，再在理由后面加 1–2 个关键词。",
+   "检查两个理由：它们都在比较“效果”吗？有没有重复？"
+  ],
+  "explanation": "提纲＝thesis＋每段一个理由＋支撑关键词。例如部分同意的提纲：Thesis: partly agree — effective for self-motivated adults, not for most children. B1: adults — flexible, self-disciplined. B2: children — need supervision and interaction。注意两个理由要从不同角度展开，并且都围绕“效果”，而不是“方便”“便宜”这类偏离焦点的内容。"
+ },
+ {
+  "id": "planning-07",
+  "kc": "planning",
+  "format": "write",
+  "difficulty": 4,
+  "instruction": "为下面这道 discuss both views 题目写一份提纲（英文关键词或短语）：包括 thesis（含你的观点）、两种观点各一个主体段，以及每段的支撑关键词。",
+  "content": "Prompt: Some people think that the government should pay for the care of elderly people, while others believe that this is the responsibility of their families. Discuss both views and give your own opinion.",
+  "options": [],
+  "answer": -1,
+  "option_explanations": [],
+  "sentences": [],
+  "accepted": [
+   "Thesis: both views have merit, but the government should cover basic care costs while families provide emotional support.\nBody 1 (government): many families cannot afford nursing homes; elderly people paid taxes all their lives\nBody 2 (families): close relationships, traditional values (filial duty); but adult children work long hours\nMy view: shared responsibility — government pays for basic care, families visit and support\nConclusion: a partnership is fairer and more sustainable",
+   "Thesis: families should take the main responsibility.\nBody 1 (government view): ageing population, rising costs; poorer families need help\nBody 2 (family view + my opinion): elderly people prefer to stay with relatives; lower cost to taxpayers; stronger family bonds\nConclusion: government support only for those without family or money"
+  ],
+  "criteria": "合格条件：(1) thesis 明确表明作者自己的观点（可以是政府、家庭或两者分担，但必须清楚）；(2) 两个主体段分别对应两种观点（政府负责 vs. 家庭负责），每段至少有一个理由；(3) 每个理由都有支撑关键词；(4) 作者支持的一方在提纲中有所体现（如在某一段或结尾说明它为什么更有说服力）；(5) 内容紧扣“谁为老人护理买单/负责”，不偏向泛谈老龄化；(6) 英文短语或笔记即可。",
+  "hints": [
+   "先写 thesis：你认为应该由谁负责？",
+   "两种观点各占一个主体段，每段写出支持该观点的理由和关键词。",
+   "检查：你的观点在 thesis 中出现了吗？提纲是否始终围绕“谁来负责老人护理”？"
+  ],
+  "explanation": "discuss both views 题的提纲：thesis（含个人观点）→ Body 1：观点一的理由 → Body 2：观点二的理由（通常把你支持的一方放在后面，并说明它为什么更有说服力）→ 结尾。观点可以是“共同承担”，但必须具体说明怎样分担，不能只说“两边都有道理”。"
+ },
+ {
+  "id": "planning-08",
+  "kc": "planning",
+  "format": "write",
+  "difficulty": 5,
+  "instruction": "下面的提纲有三个问题：没有 thesis，两个主体段重复，一个主体段跑题。请重写这份提纲（英文关键词或短语即可）。",
+  "content": "Prompt: Some people believe that cars should be banned from city centres. To what extent do you agree or disagree?\n\nWeak outline:\nBody 1: cars cause air pollution\nBody 2: car exhaust makes the air dirty\nBody 3: cars are expensive to buy",
+  "options": [],
+  "answer": -1,
+  "option_explanations": [],
+  "sentences": [],
+  "accepted": [
+   "Thesis: largely agree — banning cars from city centres would cut pollution and make streets safer, but exceptions are needed.\nBody 1: air pollution — exhaust fumes trapped in crowded streets; e.g. cleaner air in car-free zones\nBody 2: safety and space — fewer accidents; roads turned into pedestrian areas and outdoor cafés\nBody 3: limits — exceptions for buses, delivery vans and disabled drivers\nConclusion: ban cars, with sensible exceptions",
+   "Thesis: agree — car-free centres are cleaner and more pleasant.\nBody 1: air quality — less exhaust, fewer breathing problems\nBody 2: people-friendly streets — safer for walking and cycling; more space for markets and green areas\nConclusion: cities should ban cars from their centres and improve public transport"
+  ],
+  "criteria": "合格条件：(1) 加入 thesis，明确表明对“禁止汽车进入市中心”的同意程度；(2) 保留一个关于空气污染的论点，删除或合并重复的那一点；(3) 删除或替换“买车贵”这个跑题论点（买车贵与是否禁止汽车进入市中心无关）；(4) 新增的论点必须与“市中心禁车”直接相关（如行人安全、街道空间、拥堵；部分同意时也可以写例外情况，如公交、送货车、残障人士）；(5) 各论点不重复，每个至少有一个支撑关键词；(6) 英文短语或笔记即可。",
+  "hints": [
+   "先对照题目：原提纲缺少什么？哪两段在说同一件事？哪一段与“市中心禁车”无关？",
+   "合并重复的论点，删掉跑题的论点，再补一个与“市中心禁车”直接相关的新论点。",
+   "想一想：市中心没有汽车之后，街道上的行人、空间和安全会发生什么变化？"
+  ],
+  "explanation": "原提纲有三个问题：(1) 没有 thesis；(2) air pollution 和 exhaust makes the air dirty 是同一个理由；(3) 买车贵与“是否禁止汽车进入市中心”无关。修改方法：先写 thesis（如 largely agree），把污染合并成一段，再补充与市中心直接相关的论点（行人安全、街道空间）。如果部分同意，可以加一段说明例外情况（公交、送货车、残障人士）。"
  }
 ]
